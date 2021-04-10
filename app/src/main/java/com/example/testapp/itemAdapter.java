@@ -1,6 +1,7 @@
 package com.example.testapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +38,15 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
         holder.name.setText(itemA.get(position).getName());
         holder.category.setText(itemA.get(position).getCategory());
         holder.rating.setText(itemA.get(position).getRating());
+        holder.price.setText(itemA.get(position).getPrice());
 
         //ANOTHER WAY OF ADDING CLICK LISTENER
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,String.valueOf(position),Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(context,itemorder.class);
+                intent.putExtra("item_profile",itemA.get(position));
+                context.startActivity(intent);
             }
         });
 
@@ -65,6 +69,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
         private TextView rating;
         private TextView category;
         private ImageView picture;
+        private TextView price;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.nameofhotitem);
@@ -72,6 +77,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
             rating=itemView.findViewById(R.id.ratingofhotitem);
             category=itemView.findViewById(R.id.categoryofhotitem);
             picture=itemView.findViewById(R.id.imagehotitem);
+            price=itemView.findViewById(R.id.price);
         }
     }
 }

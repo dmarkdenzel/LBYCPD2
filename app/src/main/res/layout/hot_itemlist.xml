@@ -77,7 +77,23 @@
                 android:text="/5"
                 android:textColor="@color/soothing"
                 android:id="@+id/totalratingofhotitem"/>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00"
+                android:layout_alignBottom="@+id/nameofhotitem"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:textColor="@color/soothing"
+                android:id="@+id/price"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/price"
+                android:layout_alignBottom="@+id/nameofhotitem"
+                android:text="₱"
+                android:textColor="@color/soothing"
+                android:id="@+id/pricesign"/>
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 </RelativeLayout>

@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class customerhome extends AppCompatActivity {
 
+
     public BottomNavigationView navbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

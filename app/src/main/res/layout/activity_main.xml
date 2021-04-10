@@ -44,7 +44,8 @@
             android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
             android:id="@+id/loginpass"
-            android:hint="username"/>
+            android:inputType="textPassword"
+            android:hint="password"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,6 +66,13 @@
             android:text="New here? Sign up here"/>
     </RelativeLayout>
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progressbarlogin"
+        android:visibility="gone"
+        />
 
 
 </RelativeLayout>

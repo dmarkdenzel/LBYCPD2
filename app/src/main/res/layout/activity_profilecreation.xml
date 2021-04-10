@@ -110,18 +110,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Male"
+                android:buttonTint="@color/soothing"
                 android:id="@+id/malechoice"/>
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Female"
                 android:id="@+id/femalechoice"
+                android:buttonTint="@color/soothing"
                 android:layout_marginLeft="20dp"/>
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Other"
                 android:id="@+id/otherchoice"
+                android:buttonTint="@color/soothing"
                 android:layout_marginLeft="20dp"/>
         </RadioGroup>
 
@@ -142,9 +145,17 @@
             android:layout_alignBottom="@id/profcreationpicholder"
             android:layout_alignRight="@id/profcreationpicholder"
             android:src="@drawable/ic_camera"
+            android:id="@+id/picselect"
             android:backgroundTint="@color/soothing"
             android:elevation="20dp"/>
     </RelativeLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:id="@+id/progressbarcreation"/>
 
 
 </RelativeLayout>
