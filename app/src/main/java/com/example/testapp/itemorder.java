@@ -2,20 +2,46 @@ package com.example.testapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-public class itemorder extends AppCompatActivity {
+import org.w3c.dom.Text;
+
+public class itemorder extends AppCompatActivity implements View.OnClickListener {
+    public TextView itemordername,categorey,description,stock,brand,price,rating,quantity;
+    public ImageButton inc,dec,returnbutton,arrow;
+    public Button addtocart;
+    public ImageView imageorder;
+    public items item;
+    public String itemuuid;
+    public FirebaseStorage storage;
+    public StorageReference storageReference;
+    public MaterialCardView card;
+    private DatabaseReference ref;
+    private String uid;
+    private FirebaseUser user;
+    RelativeLayout hidden;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,20 +51,34 @@ public class itemorder extends AppCompatActivity {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        items item=getIntent().getParcelableExtra("item_profile");
+        item=getIntent().getParcelableExtra("item_profile");
+        itemuuid=getIntent().getStringExtra("item_uuid");
+        itemordername=findViewById(R.id.itemordername);
+        categorey=findViewById(R.id.itemordercategory);
+        description=findViewById(R.id.descriptionitemorder);
+        stock=findViewById(R.id.actualstock);
+        brand=findViewById(R.id.actualbrand);
+        price=findViewById(R.id.actualprice);
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        ref= FirebaseDatabase.getInstance().getReference("users");
+        uid=user.getUid();
+        rating=findViewById(R.id.actualrating);
+        quantity=findViewById(R.id.itemcount);
+        imageorder=findViewById(R.id.imageitemorder);
 
-        TextView itemordername=findViewById(R.id.itemordername);
-        TextView categorey=findViewById(R.id.itemordercategory);
-        TextView description=findViewById(R.id.descriptionitemorder);
-        ImageView imageorder=findViewById(R.id.imageitemorder);
-        TextView stock=findViewById(R.id.actualstock);
-        TextView brand=findViewById(R.id.actualbrand);
-        TextView price=findViewById(R.id.actualprice);
-        TextView rating=findViewById(R.id.actualrating);
-        ImageButton returnbutton=findViewById(R.id.returnbutton);
+        inc=findViewById(R.id.quantityleft);
+        dec=findViewById(R.id.quantityright);
+        returnbutton=findViewById(R.id.returnbutton);
+        arrow=findViewById(R.id.clickbutton);
+        addtocart=findViewById(R.id.addtocartbutton);
 
+        inc.setOnClickListener(this);
+        dec.setOnClickListener(this);
+        returnbutton.setOnClickListener(this);
+        arrow.setOnClickListener(this);
+        addtocart.setOnClickListener(this);
         itemordername.setText(item.getName());
-        stock.setText(item.getStock().toString());
+        stock.setText(item.getStock());
         brand.setText(item.getBrand());
         categorey.setText(item.getCategory());
         description.setText(item.getDescription());
@@ -46,38 +86,54 @@ public class itemorder extends AppCompatActivity {
         description.setMovementMethod(new ScrollingMovementMethod());
         price.setText(item.getPrice());
 
+        storage=FirebaseStorage.getInstance();
+        storageReference=storage.getReference();
 
-        Glide.with(getBaseContext()).asBitmap().load((item.getUrl())).into(imageorder);
-        MaterialCardView card=findViewById(R.id.collapsingcard);
-        ImageButton arrow=findViewById(R.id.clickbutton);
-        RelativeLayout hidden=findViewById(R.id.nonvisible);
-
-        arrow.setOnClickListener(new View.OnClickListener() {
+        storageReference.child("images2/"+itemuuid+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onClick(View v) {
-                if (hidden.getVisibility() == View.VISIBLE) {
+            public void onSuccess(Uri uri) {
+                Glide.with(getBaseContext())
+                        .load(uri.toString().trim())
+                        .into(imageorder);
+            }
+        });
 
-                    TransitionManager.beginDelayedTransition(card,
-                            new AutoTransition());
+        card=findViewById(R.id.collapsingcard);
+        hidden=findViewById(R.id.nonvisible);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int currentquantity=Integer.parseInt(quantity.getText().toString());
+        switch (v.getId()){
+            case R.id.quantityleft:
+                quantity.setText(currentquantity<9?"0"+String.valueOf(currentquantity+1):String.valueOf(currentquantity+1));
+                break;
+            case R.id.quantityright:
+                quantity.setText(currentquantity<3?"01":currentquantity<11?"0"+String.valueOf(currentquantity-1):String.valueOf(currentquantity-1));
+                break;
+            case R.id.addtocartbutton:
+                finish();
+                ref.child(uid).child("cart").child(itemuuid).setValue(item);
+                ref.child(uid).child("cart").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                return;
+            case R.id.returnbutton:
+                finish();
+                return;
+            case R.id.clickbutton:
+                if (hidden.getVisibility() == View.VISIBLE) {
+                    TransitionManager.beginDelayedTransition(card, new AutoTransition());
                     hidden.setVisibility(View.GONE);
                     arrow.setImageResource(R.drawable.ic_uparrow);
                 }
-
                 else {
-                    TransitionManager.beginDelayedTransition(card,
-                            new AutoTransition());
+                    TransitionManager.beginDelayedTransition(card, new AutoTransition());
                     hidden.setVisibility(View.VISIBLE);
                     arrow.setImageResource(R.drawable.ic_downarrow);
                 }
-            }
-        });
-
-        returnbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                return;
-            }
-        });
+                break;
+            default:
+                break;
+        }
     }
 }

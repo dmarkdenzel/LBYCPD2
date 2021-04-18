@@ -1,9 +1,6 @@
 package com.example.testapp;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class items implements Parcelable {
+public class carts {
     public String name;
     public String category;
     public String url;
@@ -12,8 +9,9 @@ public class items implements Parcelable {
     public String stock;
     public String brand;
     public String description;
+    public String quantity;
 
-    public items(String name, String category, String url, String rating, String price, String stock, String brand, String description) {
+    public carts(String name, String category, String url, String rating, String price, String stock, String brand, String description, String quantity) {
         this.name = name;
         this.category = category;
         this.url = url;
@@ -22,30 +20,8 @@ public class items implements Parcelable {
         this.stock = stock;
         this.brand = brand;
         this.description = description;
+        this.quantity = quantity;
     }
-
-    protected items(Parcel in) {
-        name = in.readString();
-        category = in.readString();
-        url = in.readString();
-        rating = in.readString();
-        price = in.readString();
-        stock = in.readString();
-        brand = in.readString();
-        description = in.readString();
-    }
-
-    public static final Creator<items> CREATOR = new Creator<items>() {
-        @Override
-        public items createFromParcel(Parcel in) {
-            return new items(in);
-        }
-
-        @Override
-        public items[] newArray(int size) {
-            return new items[size];
-        }
-    };
 
     public String getName() {
         return name;
@@ -111,9 +87,17 @@ public class items implements Parcelable {
         this.description = description;
     }
 
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public String toString() {
-        return "items{" +
+        return "carts{" +
                 "name='" + name + '\'' +
                 ", category='" + category + '\'' +
                 ", url='" + url + '\'' +
@@ -122,23 +106,7 @@ public class items implements Parcelable {
                 ", stock='" + stock + '\'' +
                 ", brand='" + brand + '\'' +
                 ", description='" + description + '\'' +
+                ", quantity='" + quantity + '\'' +
                 '}';
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(category);
-        dest.writeString(url);
-        dest.writeString(rating);
-        dest.writeString(price);
-        dest.writeString(stock);
-        dest.writeString(brand);
-        dest.writeString(description);
     }
 }

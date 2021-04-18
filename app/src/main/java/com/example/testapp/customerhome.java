@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class customerhome extends AppCompatActivity {
 
+    public Fragment home,search,shoppingcart,delivery;
 
     public BottomNavigationView navbar;
     @Override
@@ -24,10 +25,15 @@ public class customerhome extends AppCompatActivity {
 
         //INSTANTIATE THE NAVIGATION BAR
         navbar=findViewById(R.id.navbar);
+        home=new tab1();
+        search=new tab2();
+        shoppingcart=new tab3();
+        delivery=new tab4();
 
         //PLACES A DEFAULT PAGE WHEN THE APPLICATION IS OPENED SPECIFICALLY THE FIRST TAB OF NAV BAR
-        Fragment selected=new tab1();
+        Fragment selected=home;
         getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
+
 
         //ADDS A LISTENER TO CHECK WHICH TAB THE USER HAS CLICKED
         navbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -38,16 +44,16 @@ public class customerhome extends AppCompatActivity {
                 switch(item.getItemId()){
                     //DEPENDING ON THE TAB THE FRAGMENT CHANGES TO THE DESIRED NEW CLASS
                     case R.id.item1:
-                        selected=new tab1();
+                        selected=home;
                         break;
                     case R.id.item2:
-                        selected=new tab2();
+                        selected=search;
                         break;
                     case R.id.item3:
-                        selected=new tab3();
+                        selected=shoppingcart;
                         break;
                     case R.id.item4:
-                        selected=new tab4();
+                        selected=delivery;
                         break;
                     default:
                         break;

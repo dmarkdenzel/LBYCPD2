@@ -51,12 +51,12 @@ public class storeAdapter extends RecyclerView.Adapter<storeAdapter.ViewHolder>{
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(String.valueOf(position));
+//                System.out.println(position);
                 Toast.makeText(context,String.valueOf(position),Toast.LENGTH_SHORT).show();
             }
         });
 
-        Glide.with(context).asBitmap().load((storeA.get(position).getPicurl())).into(holder.image);
+        Glide.with(context).load((storeA.get(position).getPicurl())).into(holder.image);
     }
 
     @Override

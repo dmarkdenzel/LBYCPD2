@@ -30,6 +30,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class profilecreation extends AppCompatActivity {
     private FirebaseUser user;

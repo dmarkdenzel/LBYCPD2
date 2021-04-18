@@ -194,11 +194,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/addtocartbutton"
         android:layout_alignLeft="@+id/addtocartbutton"
-        android:layout_marginBottom="20dp"
         android:textSize="20dp"
         android:textColor="@color/soothing"
         android:text="₱"
         android:textStyle="bold"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"
         android:id="@+id/pesosymbol"/>
 
@@ -214,4 +214,38 @@
         android:text="0"
         android:textStyle="bold"
         android:id="@+id/actualprice"/>
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_add"
+        android:background="@color/transparent"
+        android:layout_toLeftOf="@id/itemcount"
+        android:layout_above="@id/addtocartbutton"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/quantityleft"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/itemcount"
+        android:text="01"
+        android:textSize="30dp"
+        android:textColor="@color/soothing"
+        android:layout_toLeftOf="@+id/quantityright"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_above="@+id/addtocartbutton"/>
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/addtocartbutton"
+        android:layout_alignRight="@+id/addtocartbutton"
+        android:src="@drawable/ic_sub"
+        android:layout_marginBottom="20dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/transparent"
+        android:id="@+id/quantityright"/>
+
 </RelativeLayout>
