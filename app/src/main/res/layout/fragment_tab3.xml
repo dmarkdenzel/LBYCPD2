@@ -71,7 +71,7 @@
             <TextView android:id="@+id/totalprice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
+                android:text="0.0"
                 android:textSize="20dp"
                 android:textColor="@color/soothing"
                 android:layout_marginRight="10dp"

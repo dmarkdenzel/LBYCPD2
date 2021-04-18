@@ -97,10 +97,11 @@ public class tab3 extends Fragment {
                             //Remove swiped item from list and notify the RecyclerView
                             int position = viewHolder.getAdapterPosition();
                             double sum=Double.parseDouble(price.getText().toString());
+                            sum-=Double.parseDouble(map.get("cart").get(myArray[position]).get("price"))* Double.parseDouble(carts.get(position).getQuantity());
                             carts.remove(position);
                             itemuuid.remove(position);
                             ref.child(uid).child("cart").child(myArray[position]).removeValue();
-                            sum-=Double.parseDouble(map.get("cart").get(myArray[position]).get("price"))*Double.parseDouble(map.get("cart").get(myArray[position]).get("quantity"));
+                            Log.d("quantity",map.get("cart").get(myArray[position]).get("quantity"));
                             price.setText(String.valueOf(sum));
                             test2.notifyDataSetChanged();
                         }
