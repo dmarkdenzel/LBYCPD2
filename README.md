@@ -1,3 +1,3 @@
 # Grocery Shopping Application
 
-![](https://github.com/dmarkdenzel/LBYCPD2/blob/master/assets/Home%20Screen.png?raw=true )
+![](https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png )
