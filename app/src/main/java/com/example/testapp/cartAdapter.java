@@ -101,7 +101,7 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
                 double currentamount=Double.parseDouble(totalprice.getText().toString());
                 ref.child(uid).child("cart").child(itemuuid.get(position)).child("quantity").setValue(currentquantity<3?"1":String.valueOf(currentquantity-1));
                 holder.quantity.setText(currentquantity<3?"1":String.valueOf(currentquantity-1));
-                totalprice.setText(currentquantity<3?String.valueOf(currentamount):String.valueOf(currentamount-initialamount));
+                totalprice.setText(currentquantity<2?String.valueOf(currentamount):String.valueOf(currentamount-initialamount));
                 cartA.get(position).setQuantity(currentquantity<3?"1":String.valueOf(currentquantity-1));
             }
         });
