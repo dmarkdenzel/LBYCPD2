@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity{
     private String uid;
     ImageView image;
     Button login;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
