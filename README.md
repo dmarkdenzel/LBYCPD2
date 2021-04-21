@@ -92,6 +92,7 @@ Upon registering to the application the user will be prompted with a profile cre
   </p>
 
 <h2 id="revisions">Revisions</h2>
+
  - April 5, 2021 Initial prototype(Creation of the layouts for each pages and initial development of the homepage)
  - April 6, 2021 Addition of new scrolling for the homepage
  - April 10, 2021 Firebase integration (Addition of a working login, register and personalized homepage for the user that logged in)
