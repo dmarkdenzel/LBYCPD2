@@ -4,14 +4,10 @@
    <img width="260" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png"> 
 </p>
 
-
-  
  - This project aims to help with buying and selling of groceries for both customers and shop owners to avoid crowded areas such as malls, supermarkets, and wet markets. 
 
  - With the resurgence of increasing COVID-19 cases, it is important to have a means in which a customer can find all home necessities in one application for ease of use and for the safety of the family.
 
-
-</p>
  
 <details open="open">
   <h2>Table of Contents</h2>
@@ -32,7 +28,7 @@
 
 <h2 id="intro">Introduction</h2>
 
-<center>This android application is an ecommerce online shopping application that aims to provide a service that allows people to purchase their necessities across various different stores and order their goods to their specified location with the least amount of physical contact . </center>
+This android application is an ecommerce online shopping application that aims to provide a service that allows people to purchase their necessities across various different stores and order their goods to their specified location with the least amount of physical contact . 
 
 
 **Project Structure**
@@ -52,9 +48,9 @@ For the organization of the project structure, the classes are to be stored insi
 
   
 <h2 id="reqs">Requirements and Dependencies</h2>
-<center>
+
 The software requires at minimum a phone bearing an android OS that is at a minimum SDK of API 14 (Android 4.0) or 4.4(Kitkat). 
-</center>
+
 
  - Firebase
  - Glide
@@ -68,29 +64,34 @@ The software requires at minimum a phone bearing an android OS that is at a mini
 <h2 id="setup">Setup</h2>
 
 Download the project above and open android studio. Choose any of the available virtual devices and click run (The application will be an `apk` after the development). 
+
 <p align="center">
    <img width="600" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/step1.png"> 
   </p>
+  
 Once the application is up and running the first screen that would be shown is the login screen. If the user is new to the application they can press register and login to the application; otherwise, if they are a old user then they can simply login to the application
+
 <p align="center">
    <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Login%20Screen.png"> 
 &nbsp;&nbsp;&nbsp;&nbsp;
  <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Register%20Screen.png"> 
   </p>
+  
 Upon registering to the application the user will be prompted with a profile creation screen and will be asked to input his/her personal information (if the user's application crashed or was closed during the profile creation screen, upon next login the profile creation screen will be displayed instead of directly going to the home page).
+
 <p align="center">
    <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Profile%20Creation%20Screen.png"> 
   </p>
+  
   Finally, the user is able to access the home page where they can explore the various shops and place items into their cart for purchase.
+  
   <p align="center">
    <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png"> 
 &nbsp;&nbsp;&nbsp;&nbsp;
  <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Shopping%20Cart%20Screen.png"> 
   </p>
 
-
 <h2 id="revisions">Revisions</h2>
-
  - April 5, 2021 Initial prototype(Creation of the layouts for each pages and initial development of the homepage)
  - April 6, 2021 Addition of new scrolling for the homepage
  - April 10, 2021 Firebase integration (Addition of a working login, register and personalized homepage for the user that logged in)
