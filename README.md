@@ -2,12 +2,14 @@
  
   <p align="center">
    <img width="260" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png"> 
-  <p align="center">
+</p>
+
+
   
  - This project aims to help with buying and selling of groceries for both customers and shop owners to avoid crowded areas such as malls, supermarkets, and wet markets. 
 
  - With the resurgence of increasing COVID-19 cases, it is important to have a means in which a customer can find all home necessities in one application for ease of use and for the safety of the family.
-  </p>
+
 
 </p>
  
@@ -64,13 +66,38 @@ The software requires at minimum a phone bearing an android OS that is at a mini
 
 
 <h2 id="setup">Setup</h2>
-Download the project above and open using android studio. Choose any of the available virtual devices and click run.
+
+Download the project above and open android studio. Choose any of the available virtual devices and click run (The application will be an `apk` after the development). 
+<p align="center">
+   <img width="600" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/step1.png"> 
+  </p>
+Once the application is up and running the first screen that would be shown is the login screen. If the user is new to the application they can press register and login to the application; otherwise, if they are a old user then they can simply login to the application
+<p align="center">
+   <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Login%20Screen.png"> 
+&nbsp;&nbsp;&nbsp;&nbsp;
+ <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Register%20Screen.png"> 
+  </p>
+Upon registering to the application the user will be prompted with a profile creation screen and will be asked to input his/her personal information (if the user's application crashed or was closed during the profile creation screen, upon next login the profile creation screen will be displayed instead of directly going to the home page).
+<p align="center">
+   <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Profile%20Creation%20Screen.png"> 
+  </p>
+  Finally, the user is able to access the home page where they can explore the various shops and place items into their cart for purchase.
+  <p align="center">
+   <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png"> 
+&nbsp;&nbsp;&nbsp;&nbsp;
+ <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Shopping%20Cart%20Screen.png"> 
+  </p>
+
 
 <h2 id="revisions">Revisions</h2>
 
+ - April 5, 2021 Initial prototype(Creation of the layouts for each pages and initial development of the homepage)
+ - April 6, 2021 Addition of new scrolling for the homepage
+ - April 10, 2021 Firebase integration (Addition of a working login, register and personalized homepage for the user that logged in)
+ - April 18, 2021 Initial work on shopping cart (Added new child nodes to the firebase database for items and worked on the retrieval of those items in the application)
 
 <h2 id="contributors">Contributors</h2>
-<center><table>
+<table>
   <tr>
     <th>
      <img width="100" src="https://scontent.fmnl17-3.fna.fbcdn.net/v/t1.6435-9/33579872_10209565952465269_236511908981637120_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=09cbfe&_nc_eui2=AeE9mQBM54JKCL6TveHVNjbke9j5FsOyudt72PkWw7K52_roZLJdZYYROiVruxHc2lGb1hRg16bkRVi9CR11sq-V&_nc_ohc=h6GNKY9y3BoAX-Z47FS&_nc_ht=scontent.fmnl17-3.fna&oh=cbb986cf5e49f93b6c0d9c75b2cc171b&oe=60A417EF">
@@ -99,4 +126,4 @@ Download the project above and open using android studio. Choose any of the avai
      </p>
     </th>
   </tr>
-</table></center>
+</table>
