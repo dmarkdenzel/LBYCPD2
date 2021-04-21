@@ -1,7 +1,7 @@
 <h1 align="center">Grocery Shopping Application</h3>
  
   <p align="center">
-  <p align="center">  <img width="260" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png">  </p>
+   <img width="260" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Home%20Screen.png"> 
   <p align="center">
   
  - This project aims to help with buying and selling of groceries for both customers and shop owners to avoid crowded areas such as malls, supermarkets, and wet markets. 
@@ -32,13 +32,6 @@
 
 <center>This android application is an ecommerce online shopping application that aims to provide a service that allows people to purchase their necessities across various different stores and order their goods to their specified location with the least amount of physical contact . </center>
 
-```mermaid
-graph LR
-A[Customer] -- Needs Groceries --> B[Places order]
-B --> D[Store Recieves order]
-D --> C[Ships order]
-C -- Item Delivered --> A
-```
 
 **Project Structure**
 
@@ -77,7 +70,7 @@ Download the project above and open using android studio. Choose any of the avai
 
 
 <h2 id="contributors">Contributors</h2>
-<table>
+<center><table>
   <tr>
     <th>
      <img width="100" src="https://scontent.fmnl17-3.fna.fbcdn.net/v/t1.6435-9/33579872_10209565952465269_236511908981637120_n.jpg?_nc_cat=110&ccb=1-3&_nc_sid=09cbfe&_nc_eui2=AeE9mQBM54JKCL6TveHVNjbke9j5FsOyudt72PkWw7K52_roZLJdZYYROiVruxHc2lGb1hRg16bkRVi9CR11sq-V&_nc_ohc=h6GNKY9y3BoAX-Z47FS&_nc_ht=scontent.fmnl17-3.fna&oh=cbb986cf5e49f93b6c0d9c75b2cc171b&oe=60A417EF">
@@ -106,4 +99,4 @@ Download the project above and open using android studio. Choose any of the avai
      </p>
     </th>
   </tr>
-</table>
+</table></center>
