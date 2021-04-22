@@ -69,7 +69,7 @@ Download the project above and open android studio. Choose any of the available 
    <img width="600" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/step1.png"> 
   </p>
   
-Once the application is up and running the first screen that would be shown is the login screen. If the user is new to the application they can press register and login to the application; otherwise, if they are a old user then they can simply login to the application
+Once the application is up and running the first screen that would be shown is the login screen. If the user is new to the application they can press register and sign up to the application; otherwise, if they are a old user then they can simply login to the application
 
 <p align="center">
    <img width="200" src="https://raw.githubusercontent.com/dmarkdenzel/LBYCPD2/master/assets/Login%20Screen.png"> 
