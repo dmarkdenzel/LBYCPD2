@@ -140,6 +140,7 @@ public class profilecreation extends AppCompatActivity {
                 ref.child(uid).child("phone").setValue(phoneinput);
                 ref.child(uid).child("gender").setValue(genderinput);
                 ref.child(uid).child("adress").setValue(adressinput);
+                ref.child(uid).child("cart").child("subtotal").setValue("0");
                 startActivity(new Intent(profilecreation.this,customerhome.class));
             }
         }

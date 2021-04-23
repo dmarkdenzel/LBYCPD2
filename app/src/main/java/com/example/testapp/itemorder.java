@@ -1,5 +1,6 @@
 package com.example.testapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
@@ -20,12 +21,18 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
+
+import java.util.Map;
+import java.util.Set;
 
 public class itemorder extends AppCompatActivity implements View.OnClickListener {
     public TextView itemordername,categorey,description,stock,brand,price,rating,quantity;
@@ -114,8 +121,35 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
                 break;
             case R.id.addtocartbutton:
                 finish();
-                ref.child(uid).child("cart").child(itemuuid).setValue(item);
-                ref.child(uid).child("cart").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+
+                ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Map <String,Map<String,String>> subTotalVal = (Map)snapshot.getValue();
+                        double currentTotal=Double.parseDouble(subTotalVal.get("cart").get("subtotal"));
+                        double priceToAdd=Double.parseDouble(item.getPrice())*currentquantity;
+                        ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(currentTotal+priceToAdd));
+
+                        if(snapshot.child("cart").hasChild("items")){
+                            Map <String,Map<String,Map<String,Map<String,String>>>> map = (Map)snapshot.getValue();
+                            if(map.get("cart").get("items").containsKey(itemuuid)){
+                                int quantityInDatabase=Integer.parseInt(map.get("cart").get("items").get(itemuuid).get("quantity"));
+                                ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity+quantityInDatabase));
+                            }else {
+                                ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                            }
+                        }else{
+                            ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
                 return;
             case R.id.returnbutton:
                 finish();

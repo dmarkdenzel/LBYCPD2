@@ -26,18 +26,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
 public class tab3 extends Fragment {
     private FirebaseUser user;
-    private DatabaseReference ref;
+    private DatabaseReference ref,ref2;
     private String uid;
     private FirebaseStorage storage;
     private FirebaseDatabase db;
     private StorageReference storageReference;
     public TextView price;
-
+    public ArrayList<String> itemuuid;
+    public LinearLayoutManager layoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,71 +49,84 @@ public class tab3 extends Fragment {
 
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
+        ref2=FirebaseDatabase.getInstance().getReference("items");
         uid=user.getUid();
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
         price=rootView.findViewById(R.id.totalprice);
 
+        layoutManager =new LinearLayoutManager(getActivity());
+        shoppingcart.setLayoutManager(layoutManager);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.child(uid).child("cart").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.hasChild("cart")){
-                    Map <String, Map<String, Map<String,String>>> map = (Map)snapshot.getValue();
-                    Set<String> test=map.get("cart").keySet();
+                if(snapshot.hasChild("items")){
+                    Map <String, Map<String,Map<String,String>>> quantity = (Map)snapshot.getValue();
+                    Map <String, Map<String,String>> map = (Map)snapshot.getValue();
+                    Map <String,String> cost=(Map)snapshot.getValue();
+                    Set<String> test=map.get("items").keySet();
                     String[] myArray = new String[test.size()];
                     test.toArray(myArray);
-                    double sum=0;
+                    price.setText(cost.get("subtotal"));
 
-                    ArrayList<carts> carts=new ArrayList<>();
-                    ArrayList<String> itemuuid=new ArrayList<>();
+                    ArrayList<carts> cartitems=new ArrayList<>();
+                    itemuuid=new ArrayList<>();
 
-                    LinearLayoutManager layoutManager2 =new LinearLayoutManager(getActivity());
-                    shoppingcart.setLayoutManager(layoutManager2);
-                    layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+                    cartAdapter adapter=new cartAdapter(rootView);
+                    adapter.setItem(cartitems,itemuuid);
+                    shoppingcart.setAdapter(adapter);
 
-//                    Log.d("items", map.values().toString());
 
                     for(int i=0;i<myArray.length;i++){
-                        Map<String, String> fields = map.get("cart").get(myArray[i]);
+                        int quantityItem=Integer.parseInt(quantity.get("items").get(myArray[i]).get("quantity"));
                         itemuuid.add(myArray[i]);
-                        carts.add(new carts(fields.get("name"), fields.get("category"), fields.get("url"), fields.get("rating"), fields.get("price"),fields.get("stock") , fields.get("brand"), fields.get("description"),fields.get("quantity")));
-                        sum+=Double.parseDouble(fields.get("price"))*Double.parseDouble(fields.get("quantity"));
-                    }
-                    cartAdapter test2=new cartAdapter(rootView);
-                    test2.setItem(carts,itemuuid);
-                    shoppingcart.setAdapter(test2);
-                    price.setText(String.valueOf(sum));
+                        ref2.child(myArray[i]).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                items itemProf=snapshot.getValue(items.class);
+                                cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
+                                adapter.notifyDataSetChanged();
 
-                    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+
+                    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
                         @Override
                         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                            Toast.makeText(rootView.getContext(), "on Move", Toast.LENGTH_SHORT).show();
                             return false;
                         }
 
                         @Override
                         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                            Toast.makeText(rootView.getContext(), "on Swiped ", Toast.LENGTH_SHORT).show();
-                            //Remove swiped item from list and notify the RecyclerView
                             int position = viewHolder.getAdapterPosition();
                             double sum=Double.parseDouble(price.getText().toString());
-                            sum-=Double.parseDouble(map.get("cart").get(myArray[position]).get("price"))* Double.parseDouble(carts.get(position).getQuantity());
-                            carts.remove(position);
+                            sum-=(Double.parseDouble(cartitems.get(position).getPrice())*(Double.parseDouble(quantity.get("items").get(myArray[position]).get("quantity"))));
+
+                            cartitems.remove(position);
                             itemuuid.remove(position);
-                            ref.child(uid).child("cart").child(myArray[position]).removeValue();
-                            Log.d("quantity",map.get("cart").get(myArray[position]).get("quantity"));
+
+                            ref.child(uid).child("cart").child("items").child(myArray[position]).removeValue();
+                            ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(sum));
+
                             price.setText(String.valueOf(sum));
-                            test2.notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
+
                         }
                     };
                     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
                     itemTouchHelper.attachToRecyclerView(shoppingcart);
 
+
                 }
-
-
             }
 
             @Override
@@ -119,6 +134,73 @@ public class tab3 extends Fragment {
 
             }
         });
+
+
+
+
+
+
+//        ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.hasChild("cart")){
+//                    //get the key value pair from database
+//                    Map <String, Map<String, Map<String,String>>> map = (Map)snapshot.getValue();
+//                    Set<String> test=map.get("cart").keySet();
+//                    String[] myArray = new String[test.size()];
+//                    test.toArray(myArray);
+//
+//                    ref2.child(map.get())
+//
+//                    Log.d("current item ref", map.get());
+//
+//                    for(int i=0;i<myArray.length;i++){
+//                        Map<String, String> fields = map.get("cart").get(myArray[i]);
+//                        itemuuid.add(myArray[i]);
+//                        carts.add(new carts(fields.get("name"), fields.get("category"), fields.get("url"), fields.get("rating"), fields.get("price"),fields.get("stock") , fields.get("brand"), fields.get("description"),fields.get("quantity")));
+//                        sum+=Double.parseDouble(fields.get("price"))*Double.parseDouble(fields.get("quantity"));
+//                    }
+//                    cartAdapter test2=new cartAdapter(rootView);
+//                    test2.setItem(carts,itemuuid);
+//                    shoppingcart.setAdapter(test2);
+//                    price.setText(String.valueOf(sum));
+//
+//                    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
+//
+//                        @Override
+//                        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                            Toast.makeText(rootView.getContext(), "on Move", Toast.LENGTH_SHORT).show();
+//                            return false;
+//                        }
+//
+//                        @Override
+//                        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+//                            Toast.makeText(rootView.getContext(), "on Swiped ", Toast.LENGTH_SHORT).show();
+//                            //Remove swiped item from list and notify the RecyclerView
+//                            int position = viewHolder.getAdapterPosition();
+//                            double sum=Double.parseDouble(price.getText().toString());
+//                            sum-=Double.parseDouble(map.get("cart").get(myArray[position]).get("price"))* Double.parseDouble(carts.get(position).getQuantity());
+//                            carts.remove(position);
+//                            itemuuid.remove(position);
+//                            ref.child(uid).child("cart").child(myArray[position]).removeValue();
+//                            Log.d("quantity",map.get("cart").get(myArray[position]).get("quantity"));
+//                            price.setText(String.valueOf(sum));
+//                            test2.notifyDataSetChanged();
+//                        }
+//                    };
+//                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+//                    itemTouchHelper.attachToRecyclerView(shoppingcart);
+//
+//                }
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
 
 

@@ -86,7 +86,10 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
                 int currentquantity=Integer.parseInt(cartA.get(position).getQuantity());
                 double initialamount=Double.parseDouble(cartA.get(position).getPrice());
                 double currentamount=Double.parseDouble(totalprice.getText().toString());
-                ref.child(uid).child("cart").child(itemuuid.get(position)).child("quantity").setValue(String.valueOf(currentquantity+1));
+
+                ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(currentamount+initialamount));
+                ref.child(uid).child("cart").child("items").child(itemuuid.get(position)).child("quantity").setValue(String.valueOf(currentquantity+1));
+
                 holder.quantity.setText(String.valueOf(currentquantity+1));
                 totalprice.setText(String.valueOf(currentamount+initialamount));
                 cartA.get(position).setQuantity(String.valueOf(currentquantity+1));
@@ -99,7 +102,10 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
                 int currentquantity=Integer.parseInt(cartA.get(position).getQuantity());
                 double initialamount=Double.parseDouble(cartA.get(position).getPrice());
                 double currentamount=Double.parseDouble(totalprice.getText().toString());
-                ref.child(uid).child("cart").child(itemuuid.get(position)).child("quantity").setValue(currentquantity<3?"1":String.valueOf(currentquantity-1));
+
+                ref.child(uid).child("cart").child("subtotal").setValue(currentquantity<2?String.valueOf(currentamount):String.valueOf(currentamount-initialamount));
+                ref.child(uid).child("cart").child("items").child(itemuuid.get(position)).child("quantity").setValue(currentquantity<3?"1":String.valueOf(currentquantity-1));
+
                 holder.quantity.setText(currentquantity<3?"1":String.valueOf(currentquantity-1));
                 totalprice.setText(currentquantity<2?String.valueOf(currentamount):String.valueOf(currentamount-initialamount));
                 cartA.get(position).setQuantity(currentquantity<3?"1":String.valueOf(currentquantity-1));

@@ -13,6 +13,10 @@ public class items implements Parcelable {
     public String brand;
     public String description;
 
+    public items(){
+
+    }
+
     public items(String name, String category, String url, String rating, String price, String stock, String brand, String description) {
         this.name = name;
         this.category = category;
