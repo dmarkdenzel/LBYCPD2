@@ -93,8 +93,6 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 userlogin();
-//                Intent intent=new Intent(MainActivity.this,customerhome.class);
-//                startActivity(new Intent(MainActivity.this,profilecreation.class));
             }
         });
 
@@ -133,15 +131,16 @@ public class MainActivity extends AppCompatActivity{
                                 usercred profile= snapshot.getValue(usercred.class);
 
                                 if(profile!=null){
-                                    String name=profile.name;
-                                    String gender= profile.gender;
-                                    String phone=profile.phone;
-                                    if((name.equals("none"))||(gender.equals("none"))||(phone.equals("none"))){
+                                    if((profile.name.equals("none"))||(profile.gender.equals("none"))||(profile.phone.equals("none"))){
                                         progress.setVisibility(View.GONE);
                                         startActivity(new Intent(MainActivity.this,profilecreation.class));
                                     }else{
                                         progress.setVisibility(View.GONE);
-                                        startActivity(new Intent(MainActivity.this,customerhome.class));
+                                        if(profile.type.equals("Customer")){
+                                            startActivity(new Intent(MainActivity.this,customerhome.class));
+                                        }else if(profile.type.equals("Seller")){
+                                            startActivity(new Intent(MainActivity.this,sellerhome.class));
+                                        }
                                     }
                                 }else{
                                     System.out.print("none");
@@ -159,8 +158,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             });
         }
-
-
     }
 
 

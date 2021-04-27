@@ -140,8 +140,23 @@ public class profilecreation extends AppCompatActivity {
                 ref.child(uid).child("phone").setValue(phoneinput);
                 ref.child(uid).child("gender").setValue(genderinput);
                 ref.child(uid).child("adress").setValue(adressinput);
-                ref.child(uid).child("cart").child("subtotal").setValue("0");
-                startActivity(new Intent(profilecreation.this,customerhome.class));
+                if(ref.child(uid).child("type").get().equals("Customer")){
+                    ref.child(uid).child("cart").child("subtotal").setValue("0");
+                }
+                ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        usercred user=snapshot.getValue(usercred.class);
+                        if(user.type.equals("Customer")){
+                            startActivity(new Intent(profilecreation.this,customerhome.class));
+                        }else if(user.type.equals("Seller")){
+                            startActivity(new Intent(profilecreation.this,sellerhome.class));
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                    }
+                });
             }
         }
     }

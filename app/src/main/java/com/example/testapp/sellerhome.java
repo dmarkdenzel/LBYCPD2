@@ -10,32 +10,29 @@ import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class customerhome extends AppCompatActivity {
+public class sellerhome extends AppCompatActivity {
 
-    public Fragment home,search,shoppingcart,delivery;
+    public Fragment analytics, orders, add, reviews, profile;
     public BottomNavigationView navbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_customerhome);
-        //MAKES THE APPLICATION FULL SCREEN TO HIDE THE STATUS BAR
+        setContentView(R.layout.activity_sellerhome);
+
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        //INSTANTIATE THE NAVIGATION BAR
-        navbar=findViewById(R.id.navbar);
-        home=new tab1();
-        search=new tab2();
-        shoppingcart=new tab3();
-        delivery=new tab4();
+        navbar=findViewById(R.id.navbarSeller);
+        analytics= new tab1Seller();
+        orders= new tab2Seller();
+        add= new tab3Seller();
+        reviews= new tab4Seller();
+        profile= new tab5Seller();
 
-        //PLACES A DEFAULT PAGE WHEN THE APPLICATION IS OPENED SPECIFICALLY THE FIRST TAB OF NAV BAR
-        Fragment selected=home;
-        getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
+        Fragment selected=analytics;
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragSeller,selected).commit();
 
-
-        //ADDS A LISTENER TO CHECK WHICH TAB THE USER HAS CLICKED
         navbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -43,25 +40,30 @@ public class customerhome extends AppCompatActivity {
                 Fragment selected=null;
                 switch(item.getItemId()){
                     //DEPENDING ON THE TAB THE FRAGMENT CHANGES TO THE DESIRED NEW CLASS
-                    case R.id.item1:
-                        selected=home;
+                    case R.id.analytics:
+                        selected=analytics;
                         break;
-                    case R.id.item2:
-                        selected=search;
+                    case R.id.orders:
+                        selected=orders;
                         break;
-                    case R.id.item3:
-                        selected=shoppingcart;
+                    case R.id.edit:
+                        selected=add;
                         break;
-                    case R.id.item4:
-                        selected=delivery;
+                    case R.id.review:
+                        selected=reviews;
+                        break;
+                    case R.id.profile:
+                        selected=profile;
                         break;
                     default:
                         break;
                 }
                 //COMMITS THE NEW FRAGMENT
-                getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragSeller,selected).commit();
                 return true;
             }
         });
+
+
     }
 }

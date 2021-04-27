@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TestApp">
-        <activity android:name=".itemorder"></activity>
+        <activity android:name=".sellerhome"></activity>
+        <activity android:name=".itemorder" />
         <activity android:name=".profilecreation" />
         <activity android:name=".registerv1" />
         <activity android:name=".customerhome" />
