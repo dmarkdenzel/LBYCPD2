@@ -12,12 +12,14 @@ public class items implements Parcelable {
     public String stock;
     public String brand;
     public String description;
+    public String sellerUUID;
+    public int quantitySold;
 
     public items(){
 
     }
 
-    public items(String name, String category, String url, String rating, String price, String stock, String brand, String description) {
+    public items(String name, String category, String url, String rating, String price, String stock, String brand, String description, String sellerUUID, int quantitySold) {
         this.name = name;
         this.category = category;
         this.url = url;
@@ -26,6 +28,8 @@ public class items implements Parcelable {
         this.stock = stock;
         this.brand = brand;
         this.description = description;
+        this.sellerUUID = sellerUUID;
+        this.quantitySold = quantitySold;
     }
 
     protected items(Parcel in) {
@@ -37,6 +41,8 @@ public class items implements Parcelable {
         stock = in.readString();
         brand = in.readString();
         description = in.readString();
+        sellerUUID = in.readString();
+        quantitySold = in.readInt();
     }
 
     public static final Creator<items> CREATOR = new Creator<items>() {
@@ -115,6 +121,22 @@ public class items implements Parcelable {
         this.description = description;
     }
 
+    public String getSellerUUID() {
+        return sellerUUID;
+    }
+
+    public void setSellerUUID(String sellerUUID) {
+        this.sellerUUID = sellerUUID;
+    }
+
+    public int getQuantitySold() {
+        return quantitySold;
+    }
+
+    public void setQuantitySold(int quantitySold) {
+        this.quantitySold = quantitySold;
+    }
+
     @Override
     public String toString() {
         return "items{" +
@@ -126,8 +148,11 @@ public class items implements Parcelable {
                 ", stock='" + stock + '\'' +
                 ", brand='" + brand + '\'' +
                 ", description='" + description + '\'' +
+                ", sellerUUID='" + sellerUUID + '\'' +
+                ", quantitySold=" + quantitySold +
                 '}';
     }
+
 
     @Override
     public int describeContents() {
@@ -144,5 +169,7 @@ public class items implements Parcelable {
         dest.writeString(stock);
         dest.writeString(brand);
         dest.writeString(description);
+        dest.writeString(sellerUUID);
+        dest.writeInt(quantitySold);
     }
 }

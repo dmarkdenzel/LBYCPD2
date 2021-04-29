@@ -2,9 +2,11 @@ package com.example.testapp;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.ktx.Firebase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -38,10 +41,12 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EventListener;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class tab1 extends Fragment {
 
@@ -49,17 +54,18 @@ public class tab1 extends Fragment {
     private DatabaseReference ref,ref2;
     private String uid;
     private FirebaseStorage storage;
-    private FirebaseDatabase db;
     private StorageReference storageReference;
     public ImageView image;
     public TextView name;
     public RecyclerView hotitems,stores;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_tab1, container, false);
 
+        View rootView = inflater.inflate(R.layout.fragment_tab1, container, false);
+        setRetainInstance(true);
         stores= rootView.findViewById(R.id.storeslist);
         hotitems= rootView.findViewById(R.id.hotitemslist);
 
@@ -72,8 +78,47 @@ public class tab1 extends Fragment {
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
 
+        LinearLayoutManager layoutManager =new LinearLayoutManager(getActivity());
+        LinearLayoutManager layoutManager2 =new LinearLayoutManager(getActivity());
+
+        stores.setLayoutManager(layoutManager);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+
+        hotitems.setLayoutManager(layoutManager2);
+        layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+
+        //filter by type
+        Query query = FirebaseDatabase.getInstance().getReference("users").orderByChild("type").equalTo("Seller");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map<String,Map<String,String>> storeProf= (Map)snapshot.getValue();
+                Set<String> keys=storeProf.keySet();
+                String[] myArray = new String[keys.size()];
+                keys.toArray(myArray);
+
+                ArrayList<stores> store=new ArrayList<>();
+                ArrayList<String> storeuuid=new ArrayList<>();
+
+                for(int i=0;i<(myArray.length<6?myArray.length:6);i++){
+                    Map <String, String> fields = storeProf.get(myArray[i]);
+                    store.add(new stores(fields.get("name"),fields.get("pic"),fields.get("rating"),fields.get("adress")));
+                    storeuuid.add(myArray[i]);
+                }
+
+                storeAdapter test=new storeAdapter(rootView.getContext());
+                test.setStore(store,storeuuid);
+                stores.setAdapter(test);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 usercred profile= snapshot.getValue(usercred.class);
@@ -111,23 +156,35 @@ public class tab1 extends Fragment {
             }
         });
 
-        LinearLayoutManager layoutManager =new LinearLayoutManager(getActivity());
-        LinearLayoutManager layoutManager2 =new LinearLayoutManager(getActivity());
 
-        stores.setLayoutManager(layoutManager);
-        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Map <String, Map<String,String>> map = (Map)snapshot.getValue();
+//                Map <String, String> map2 = map.get("type").entrySet().stream()
+//                        .filter(mapCond -> "Seller".equals(mapCond.getValue()))
+//                        .collect(Collectors.toMap(mapCond -> mapCond.getKey(), mapCond -> mapCond.getValue()));
+//                Set<String> mapkeys=map2.keySet();
+//                String[] myArray = new String[mapkeys.size()];
+//                mapkeys.toArray(myArray);
+//
+//                Log.d("uuid sellers:", Arrays.toString(myArray));
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
 
-        hotitems.setLayoutManager(layoutManager2);
-        layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
 
-        ArrayList<stores> store=new ArrayList<>();
 
-        store.add(new stores("SM","https://pngimage.net/wp-content/uploads/2018/06/sm-mall-logo-png-7.png","4","Quezon City"));
-        store.add(new stores("PURE GOLD","https://www.clickthecity.com/img/restaurants/original/5747.jpg","5","Quezon City"));
-        store.add(new stores("WALTER MART","https://assets.bossjob.com/companies/6830/logo/tcX2I61NBjgU5vaDTl00cOHspHsKmhca2EWenldp.png","3","Quezon City"));
-        store.add(new stores("LANDMARK","https://static1.eyellowpages.ph/uploads/yp_business/photo/20364/thumb_The_LandMark_Logo.gif","2","Malabon City"));
-        store.add(new stores("ROBINSONS","https://upload.wikimedia.org/wikipedia/en/f/ff/Robinsons_Supermarket_logo.jpg","4","Malabon City"));
-        store.add(new stores("SUPER 8","https://ph.top10place.com/img_files/294917943966629","3","Malabon City"));
+//        store.add(new stores("SM","https://pngimage.net/wp-content/uploads/2018/06/sm-mall-logo-png-7.png","4","Quezon City"));
+//        store.add(new stores("PURE GOLD","https://www.clickthecity.com/img/restaurants/original/5747.jpg","5","Quezon City"));
+//        store.add(new stores("WALTER MART","https://assets.bossjob.com/companies/6830/logo/tcX2I61NBjgU5vaDTl00cOHspHsKmhca2EWenldp.png","3","Quezon City"));
+//        store.add(new stores("LANDMARK","https://static1.eyellowpages.ph/uploads/yp_business/photo/20364/thumb_The_LandMark_Logo.gif","2","Malabon City"));
+//        store.add(new stores("ROBINSONS","https://upload.wikimedia.org/wikipedia/en/f/ff/Robinsons_Supermarket_logo.jpg","4","Malabon City"));
+//        store.add(new stores("SUPER 8","https://ph.top10place.com/img_files/294917943966629","3","Malabon City"));
 
 
 
@@ -135,7 +192,7 @@ public class tab1 extends Fragment {
         ref2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Map <String, Map<String, String>> map = (Map)snapshot.getValue();
+                Map <String, Map<String, Object>> map = (Map)snapshot.getValue();
                 Set<String> test=map.keySet();
                 String[] myArray = new String[test.size()];
                 test.toArray(myArray);
@@ -145,9 +202,9 @@ public class tab1 extends Fragment {
 
 //                Log.d("items", map.values().toString());
                 for(int i=0;i<myArray.length;i++){
-                    Map<String, String> fields = map.get(myArray[i]);
+                    Map<String, Object> fields = map.get(myArray[i]);
                     itemuuid.add(myArray[i]);
-                    item.add(new items(fields.get("name"), fields.get("category"), fields.get("url"), fields.get("rating"), fields.get("price"),fields.get("stock") , fields.get("brand"), fields.get("description")));
+                    item.add(new items(fields.get("name").toString(), fields.get("category").toString(), fields.get("url").toString(), fields.get("rating").toString(), fields.get("price").toString(),fields.get("stock").toString(), fields.get("brand").toString(), fields.get("description").toString(), fields.get("sellerUUID").toString(),((Long) fields.get("quantitySold")).intValue()));
                 }
 
 //                Log.d("items", String.valueOf(item.size()));
@@ -176,13 +233,11 @@ public class tab1 extends Fragment {
 //        item.add(new items("Needle","Sewing","https://www.generatorslist.com/public/img/misc/objects/needle.jpg","4","130.00","100","sew","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
 //        item.add(new items("Apron","Kitchen","https://www.generatorslist.com/public/img/misc/objects/apron.jpg","2","112.00","300","kitenware","Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."));
 
-        storeAdapter test=new storeAdapter(rootView.getContext());
 
-        test.setStore(store);
 //        test2.setItem(item,itemuuid);
 
 
-        stores.setAdapter(test);
+
 
 
 

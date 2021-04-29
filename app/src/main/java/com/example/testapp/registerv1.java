@@ -120,6 +120,7 @@ public class registerv1 extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     usercred user= new usercred(emailinput,typeinput,"none","none","none","none","none");
+                                    Intent intent=new Intent(registerv1.this,profilecreation.class);
                                     FirebaseDatabase.getInstance().getReference("users")
                                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                             .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -128,7 +129,7 @@ public class registerv1 extends AppCompatActivity {
                                             if(task.isSuccessful()){
                                                 Toast.makeText(registerv1.this, "Registration Successful", Toast.LENGTH_SHORT).show();
                                                 progress.setVisibility(View.GONE);
-                                                startActivity(new Intent(registerv1.this,profilecreation.class));
+                                                startActivity(intent);
                                             }else{
                                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                                 System.out.print(e);

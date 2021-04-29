@@ -73,8 +73,6 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,itemorder.class);
-                items item=new items(cartA.get(position).getName(),cartA.get(position).getCategory(),cartA.get(position).getUrl(),cartA.get(position).getRating(),cartA.get(position).getPrice(),cartA.get(position).getStock(),cartA.get(position).getBrand(),cartA.get(position).getDescription());
-                intent.putExtra("item_profile",item);
                 intent.putExtra("item_uuid",itemuuid.get(position));
                 context.startActivity(intent);
             }
@@ -127,7 +125,7 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
         return cartA.size();
     }
 
-    public void setItem(ArrayList<carts> cart,ArrayList<String> itemuuid) {
+    public void setCart(ArrayList<carts> cart,ArrayList<String> itemuuid) {
         this.cartA = cart;
         this.itemuuid=itemuuid;
         notifyDataSetChanged();

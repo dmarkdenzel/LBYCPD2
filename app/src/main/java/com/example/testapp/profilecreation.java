@@ -142,6 +142,9 @@ public class profilecreation extends AppCompatActivity {
                 ref.child(uid).child("adress").setValue(adressinput);
                 if(ref.child(uid).child("type").get().equals("Customer")){
                     ref.child(uid).child("cart").child("subtotal").setValue("0");
+                }else{
+                    ref.child(uid).child("sales").setValue("0");
+                    ref.child(uid).child("rating").setValue("0");
                 }
                 ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

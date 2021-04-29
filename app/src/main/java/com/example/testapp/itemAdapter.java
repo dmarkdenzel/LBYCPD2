@@ -50,7 +50,6 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(context,itemorder.class);
-                intent.putExtra("item_profile",itemA.get(position));
                 intent.putExtra("item_uuid",itemuuid.get(position));
                 context.startActivity(intent);
             }
@@ -59,14 +58,16 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
         FirebaseStorage storage=FirebaseStorage.getInstance();
         StorageReference storageReference=storage.getReference();
 
-        storageReference.child("images2/"+itemuuid.get(position)+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(context)
-                        .load(uri.toString().trim())
-                        .into(holder.picture);
-            }
-        });
+        if(itemA.get(position).getUrl().equals("available")){
+            storageReference.child("images2/"+itemuuid.get(position)+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .load(uri.toString().trim())
+                            .into(holder.picture);
+                }
+            });
+        }
 
     }
 
@@ -83,10 +84,10 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView name;
+        private ImageView picture;
         private MaterialCardView parent;
         private TextView rating;
         private TextView category;
-        private ImageView picture;
         private TextView price;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

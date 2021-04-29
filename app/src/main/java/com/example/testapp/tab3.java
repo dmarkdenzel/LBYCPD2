@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +48,8 @@ public class tab3 extends Fragment {
 
         RecyclerView shoppingcart=rootView.findViewById(R.id.shoppingcartcontainer);
 
+
+
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
         ref2=FirebaseDatabase.getInstance().getReference("items");
@@ -75,7 +78,7 @@ public class tab3 extends Fragment {
                     itemuuid=new ArrayList<>();
 
                     cartAdapter adapter=new cartAdapter(rootView);
-                    adapter.setItem(cartitems,itemuuid);
+                    adapter.setCart(cartitems,itemuuid);
                     shoppingcart.setAdapter(adapter);
 
 
@@ -88,7 +91,6 @@ public class tab3 extends Fragment {
                                 items itemProf=snapshot.getValue(items.class);
                                 cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
                                 adapter.notifyDataSetChanged();
-
                             }
 
                             @Override
@@ -134,77 +136,6 @@ public class tab3 extends Fragment {
 
             }
         });
-
-
-
-
-
-
-//        ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.hasChild("cart")){
-//                    //get the key value pair from database
-//                    Map <String, Map<String, Map<String,String>>> map = (Map)snapshot.getValue();
-//                    Set<String> test=map.get("cart").keySet();
-//                    String[] myArray = new String[test.size()];
-//                    test.toArray(myArray);
-//
-//                    ref2.child(map.get())
-//
-//                    Log.d("current item ref", map.get());
-//
-//                    for(int i=0;i<myArray.length;i++){
-//                        Map<String, String> fields = map.get("cart").get(myArray[i]);
-//                        itemuuid.add(myArray[i]);
-//                        carts.add(new carts(fields.get("name"), fields.get("category"), fields.get("url"), fields.get("rating"), fields.get("price"),fields.get("stock") , fields.get("brand"), fields.get("description"),fields.get("quantity")));
-//                        sum+=Double.parseDouble(fields.get("price"))*Double.parseDouble(fields.get("quantity"));
-//                    }
-//                    cartAdapter test2=new cartAdapter(rootView);
-//                    test2.setItem(carts,itemuuid);
-//                    shoppingcart.setAdapter(test2);
-//                    price.setText(String.valueOf(sum));
-//
-//                    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
-//
-//                        @Override
-//                        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                            Toast.makeText(rootView.getContext(), "on Move", Toast.LENGTH_SHORT).show();
-//                            return false;
-//                        }
-//
-//                        @Override
-//                        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-//                            Toast.makeText(rootView.getContext(), "on Swiped ", Toast.LENGTH_SHORT).show();
-//                            //Remove swiped item from list and notify the RecyclerView
-//                            int position = viewHolder.getAdapterPosition();
-//                            double sum=Double.parseDouble(price.getText().toString());
-//                            sum-=Double.parseDouble(map.get("cart").get(myArray[position]).get("price"))* Double.parseDouble(carts.get(position).getQuantity());
-//                            carts.remove(position);
-//                            itemuuid.remove(position);
-//                            ref.child(uid).child("cart").child(myArray[position]).removeValue();
-//                            Log.d("quantity",map.get("cart").get(myArray[position]).get("quantity"));
-//                            price.setText(String.valueOf(sum));
-//                            test2.notifyDataSetChanged();
-//                        }
-//                    };
-//                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-//                    itemTouchHelper.attachToRecyclerView(shoppingcart);
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
-
-
-//        Log.d("items", String.valueOf(carts.size()));
 
 
         return rootView;

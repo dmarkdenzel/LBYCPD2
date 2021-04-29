@@ -39,12 +39,11 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
     public ImageButton inc,dec,returnbutton,arrow;
     public Button addtocart;
     public ImageView imageorder;
-    public items item;
     public String itemuuid;
     public FirebaseStorage storage;
     public StorageReference storageReference;
     public MaterialCardView card;
-    private DatabaseReference ref;
+    private DatabaseReference ref,ref2;
     private String uid;
     private FirebaseUser user;
     RelativeLayout hidden;
@@ -58,8 +57,8 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        item=getIntent().getParcelableExtra("item_profile");
         itemuuid=getIntent().getStringExtra("item_uuid");
+
         itemordername=findViewById(R.id.itemordername);
         categorey=findViewById(R.id.itemordercategory);
         description=findViewById(R.id.descriptionitemorder);
@@ -68,6 +67,7 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
         price=findViewById(R.id.actualprice);
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
+        ref2= FirebaseDatabase.getInstance().getReference("items");
         uid=user.getUid();
         rating=findViewById(R.id.actualrating);
         quantity=findViewById(R.id.itemcount);
@@ -84,14 +84,30 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
         returnbutton.setOnClickListener(this);
         arrow.setOnClickListener(this);
         addtocart.setOnClickListener(this);
-        itemordername.setText(item.getName());
-        stock.setText(item.getStock());
-        brand.setText(item.getBrand());
-        categorey.setText(item.getCategory());
-        description.setText(item.getDescription());
-        rating.setText(item.getRating());
-        description.setMovementMethod(new ScrollingMovementMethod());
-        price.setText(item.getPrice());
+
+        ref2.child(itemuuid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                items item= snapshot.getValue(items.class);
+
+                itemordername.setText(item.getName());
+                stock.setText(item.getStock());
+                brand.setText(item.getBrand());
+                categorey.setText(item.getCategory());
+                description.setText(item.getDescription());
+                description.setMovementMethod(new ScrollingMovementMethod());
+                rating.setText(item.getRating());
+                price.setText(item.getPrice());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
 
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
@@ -112,6 +128,7 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
         int currentquantity=Integer.parseInt(quantity.getText().toString());
+        double initprice=Double.parseDouble(price.getText().toString());
         switch (v.getId()){
             case R.id.quantityleft:
                 quantity.setText(currentquantity<9?"0"+String.valueOf(currentquantity+1):String.valueOf(currentquantity+1));
@@ -127,7 +144,7 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Map <String,Map<String,String>> subTotalVal = (Map)snapshot.getValue();
                         double currentTotal=Double.parseDouble(subTotalVal.get("cart").get("subtotal"));
-                        double priceToAdd=Double.parseDouble(item.getPrice())*currentquantity;
+                        double priceToAdd=initprice*currentquantity;
                         ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(currentTotal+priceToAdd));
 
                         if(snapshot.child("cart").hasChild("items")){

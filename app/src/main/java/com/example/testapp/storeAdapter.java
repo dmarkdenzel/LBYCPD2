@@ -1,6 +1,7 @@
 package com.example.testapp;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -20,6 +24,7 @@ public class storeAdapter extends RecyclerView.Adapter<storeAdapter.ViewHolder>{
 
 
     private ArrayList<stores> storeA=new ArrayList<>();
+    private ArrayList<String> storeuuid=new ArrayList<>();
     private Context context;
     public storeAdapter(Context context) {
         this.context=context;
@@ -56,7 +61,19 @@ public class storeAdapter extends RecyclerView.Adapter<storeAdapter.ViewHolder>{
             }
         });
 
-        Glide.with(context).load((storeA.get(position).getPicurl())).into(holder.image);
+        FirebaseStorage storage=FirebaseStorage.getInstance();
+        StorageReference storageReference=storage.getReference();
+
+        if(storeA.get(position).getPicurl().equals("available")){
+            storageReference.child("images/"+storeuuid.get(position)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Glide.with(context)
+                            .load(uri.toString().trim())
+                            .into(holder.image);
+                }
+            });
+        }
     }
 
     @Override
@@ -64,8 +81,9 @@ public class storeAdapter extends RecyclerView.Adapter<storeAdapter.ViewHolder>{
         return storeA.size();
     }
 
-    public void setStore(ArrayList<stores> store) {
+    public void setStore(ArrayList<stores> store,ArrayList<String> storeUUID) {
         this.storeA = store;
+        this.storeuuid=storeUUID;
         notifyDataSetChanged();
     }
 

@@ -35,6 +35,7 @@ public class customerhome extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
 
 
+
         //ADDS A LISTENER TO CHECK WHICH TAB THE USER HAS CLICKED
         navbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
