@@ -153,7 +153,9 @@ public class profilecreation extends AppCompatActivity {
                         if(user.type.equals("Customer")){
                             startActivity(new Intent(profilecreation.this,customerhome.class));
                         }else if(user.type.equals("Seller")){
-                            startActivity(new Intent(profilecreation.this,sellerhome.class));
+                            Intent sellerpage=new Intent(profilecreation.this,sellerhome.class);
+                            sellerpage.putExtra("page","1");
+                            startActivity(sellerpage);
                         }
                     }
                     @Override

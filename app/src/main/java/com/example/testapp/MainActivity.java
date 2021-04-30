@@ -139,7 +139,10 @@ public class MainActivity extends AppCompatActivity{
                                         if(profile.type.equals("Customer")){
                                             startActivity(new Intent(MainActivity.this,customerhome.class));
                                         }else if(profile.type.equals("Seller")){
-                                            startActivity(new Intent(MainActivity.this,sellerhome.class));
+                                            Intent sellerpage=new Intent(MainActivity.this,sellerhome.class);
+                                            sellerpage.putExtra("page","1");
+                                            startActivity(sellerpage);
+
                                         }
                                     }
                                 }else{

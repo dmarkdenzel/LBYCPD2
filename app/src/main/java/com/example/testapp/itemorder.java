@@ -98,6 +98,7 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
                 description.setMovementMethod(new ScrollingMovementMethod());
                 rating.setText(item.getRating());
                 price.setText(item.getPrice());
+
             }
 
             @Override
@@ -105,7 +106,6 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
 
             }
         });
-
 
 
 

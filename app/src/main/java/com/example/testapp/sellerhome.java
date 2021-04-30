@@ -30,8 +30,13 @@ public class sellerhome extends AppCompatActivity {
         reviews= new tab4Seller();
         profile= new tab5Seller();
 
-        Fragment selected=analytics;
+        String choice=getIntent().getStringExtra("page");
+
+        Fragment selected=choice.equals("1")?analytics:add;
         getSupportFragmentManager().beginTransaction().replace(R.id.fragSeller,selected).commit();
+        navbar.setSelectedItemId(choice.equals("1")?R.id.analytics:R.id.edit);
+
+
 
         navbar.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

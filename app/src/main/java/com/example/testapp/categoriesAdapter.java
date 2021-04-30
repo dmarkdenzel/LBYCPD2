@@ -1,6 +1,8 @@
 package com.example.testapp;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.media.Image;
 import android.net.Uri;
 import android.transition.AutoTransition;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -33,6 +36,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 
@@ -40,12 +44,10 @@ public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.Vi
 
     private ArrayList<categories> categoryA=new ArrayList<>();
     private View rootView;
-    private Fragment current;
-    private FragmentTransaction fragmentTransaction;
-    public categoriesAdapter(View rootview, Fragment current, FragmentTransaction fragmentTransaction) {
+
+    public categoriesAdapter(View rootview) {
         this.rootView=rootview;
-        this.current=current;
-        this.fragmentTransaction=fragmentTransaction;
+
     }
 
     @NonNull
@@ -72,42 +74,10 @@ public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.Vi
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
                     String uid=user.getUid();
 
-
-//                    Fragment currentFragment = getFragmentManager().findFragmentByTag("YourFragmentTag");
-//                    Fragment currentFragment = rootView.getActivity().getSupportFragmentManager().findFragmentById(R.id.container);
-
-                    MaterialCardView popup=rootView.findViewById(R.id.addcategorypage);
-                    ImageButton close=rootView.findViewById(R.id.returnbuttonaddcategory);
-                    Button submit=rootView.findViewById(R.id.submitnewcategory);
-                    EditText name=rootView.findViewById(R.id.nameofnewcategory);
-                    ProgressBar progress=rootView.findViewById(R.id.progressbarnewcategory);
-                    FloatingActionButton picselect=rootView.findViewById(R.id.picselectnewcategory);
-                    ImageView image=rootView.findViewById(R.id.newcategoryimage);
-
-                    popup.setVisibility(View.VISIBLE);
-
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            popup.setVisibility(View.GONE);
-                        }
-                    });
-
-                    submit.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            categoryA.add(0, new categories(name.getText().toString(),"na"));
-
-                            ref.child(uid).child("categories").child(name.getText().toString()).child("url").setValue("na");
-                            name.setText("");
-                            notifyDataSetChanged();
-
-                            fragmentTransaction.detach(current);
-                            fragmentTransaction.attach(current);
-                            fragmentTransaction.commit();
-                            popup.setVisibility(View.GONE);
-                        }
-                    });
+                    Intent intent=new Intent(rootView.getContext(),categoryCreator.class);
+                    rootView.getContext().startActivity(intent);
+                    ((Activity)rootView.getContext()).finish();
+//                    ref.child(uid).child("categories").child(name.getText().toString()).child("url").setValue("processing");
 
                 }else{
                     Log.d("position",String.valueOf(position));
@@ -126,7 +96,7 @@ public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.Vi
                     }
                 });
             }else{
-                storageReference.child("image3/"+uid+"/"+categoryA.get(position).name+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                storageReference.child("image3/"+uid+"/"+categoryA.get(position).name).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         Glide.with(rootView.getContext())
@@ -161,5 +131,11 @@ public class categoriesAdapter extends RecyclerView.Adapter<categoriesAdapter.Vi
             parent=itemView.findViewById(R.id.imageCategoryHolder);
         }
     }
+
+
+
+
+
+
 
 }
