@@ -110,7 +110,7 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
             }
         });
 
-        storageReference.child("images2/"+itemuuid.get(position)+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storageReference.child("images2/"+itemuuid.get(position)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(context)

@@ -49,6 +49,7 @@ public class tab3Seller extends Fragment {
     private View rootView;
     public Uri imageurl;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -112,7 +112,7 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
 
-        storageReference.child("images2/"+itemuuid+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storageReference.child("images2/"+itemuuid).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(getBaseContext())

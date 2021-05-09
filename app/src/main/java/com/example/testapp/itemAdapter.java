@@ -59,7 +59,7 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
         StorageReference storageReference=storage.getReference();
 
         if(itemA.get(position).getUrl().equals("available")){
-            storageReference.child("images2/"+itemuuid.get(position)+".jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            storageReference.child("images2/"+itemuuid.get(position)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     Glide.with(context)
