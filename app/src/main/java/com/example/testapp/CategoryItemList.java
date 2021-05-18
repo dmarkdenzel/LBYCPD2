@@ -2,6 +2,7 @@ package com.example.testapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -108,8 +109,33 @@ public class CategoryItemList extends AppCompatActivity {
                             }
                         });
                     }
+                    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+                        @Override
+                        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                            return false;
+                        }
+
+                        @Override
+                        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                            int position = viewHolder.getAdapterPosition();
+
+                            ref2.child(myArray[position]).removeValue();
+                            ref.child(uid).child("categories").child(category).child("items").child(myArray[position]).removeValue();
+                            StorageReference imageOfCategory = storageReference.child("images2/"+myArray[position]);
+                            imageOfCategory.delete();
+
+                            item.remove(position);
+                            itemuuid.remove(position);
+
+
+                            test2.notifyDataSetChanged();
+
+                        }
+                    };
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+                    itemTouchHelper.attachToRecyclerView(categoryitemlist);
                 }
-                test2.notifyDataSetChanged();
             }
 
             @Override

@@ -74,6 +74,7 @@ public class tab3 extends Fragment {
                     test.toArray(myArray);
                     price.setText(cost.get("subtotal"));
 
+
                     ArrayList<carts> cartitems=new ArrayList<>();
                     itemuuid=new ArrayList<>();
 
@@ -82,15 +83,31 @@ public class tab3 extends Fragment {
                     shoppingcart.setAdapter(adapter);
 
 
+
                     for(int i=0;i<myArray.length;i++){
                         int quantityItem=Integer.parseInt(quantity.get("items").get(myArray[i]).get("quantity"));
-                        itemuuid.add(myArray[i]);
+                        String id=myArray[i];
+
                         ref2.child(myArray[i]).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                items itemProf=snapshot.getValue(items.class);
-                                cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
-                                adapter.notifyDataSetChanged();
+                                try{
+                                    double total=0;
+                                    items itemProf=snapshot.getValue(items.class);
+                                    cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
+                                    adapter.notifyDataSetChanged();
+                                    itemuuid.add(id);
+                                    for(int j=0;j<cartitems.size();j++){
+                                        total=total+(Double.parseDouble(cartitems.get(j).getPrice())*quantityItem);
+                                    }
+                                    if(total!=Double.parseDouble(price.getText().toString())) {
+                                        price.setText(String.valueOf(total));
+                                        ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(total));
+                                    }
+                                }catch (Exception e){
+                                    ref.child(uid).child("cart").child("items").child(id).removeValue();
+                                }
+
                             }
 
                             @Override
@@ -99,6 +116,7 @@ public class tab3 extends Fragment {
                             }
                         });
                     }
+
 
                     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 

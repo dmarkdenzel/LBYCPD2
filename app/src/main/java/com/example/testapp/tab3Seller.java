@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,7 +41,7 @@ import java.util.Set;
 public class tab3Seller extends Fragment {
 
     private FirebaseUser user;
-    private DatabaseReference ref;
+    private DatabaseReference ref,ref2;
     private String uid;
     private FirebaseStorage storage;
     private StorageReference storageReference;
@@ -59,6 +60,7 @@ public class tab3Seller extends Fragment {
 
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
+        ref2= FirebaseDatabase.getInstance().getReference("items");
         uid=user.getUid();
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
@@ -93,6 +95,60 @@ public class tab3Seller extends Fragment {
 
                 categorylist.setAdapter(cartAd);
 
+                ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        int position = viewHolder.getAdapterPosition();
+
+                        ref.child(uid).child("categories").child(category.get(position).name).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.child("items").exists()){
+                                    Map<String, String> map= (Map)snapshot.child("items").getValue();
+                                    Set<String> test=map.keySet();
+                                    String[] myArray = new String[test.size()];
+                                    test.toArray(myArray);
+
+                                    for(int i=0;i<myArray.length;i++){
+                                        ref2.child(myArray[i]).removeValue();
+                                        StorageReference imageOfItem = storageReference.child("images2/"+myArray[i]);
+                                        imageOfItem.delete();
+                                    }
+                                    
+                                    ref.child(uid).child("categories").child(category.get(position).name).removeValue();
+                                    category.remove(position);
+                                    cartAd.notifyDataSetChanged();
+                                }else{
+                                    ref.child(uid).child("categories").child(category.get(position).name).removeValue();
+                                    category.remove(position);
+                                    cartAd.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+
+
+
+                        StorageReference imageOfCategory = storageReference.child("image3/"+uid+"/"+category.get(position).name);
+                        imageOfCategory.delete();
+
+
+                    }
+                };
+                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+                itemTouchHelper.attachToRecyclerView(categorylist);
+
 
             }
 
@@ -101,6 +157,8 @@ public class tab3Seller extends Fragment {
 
             }
         });
+
+
         return rootView;
     }
 

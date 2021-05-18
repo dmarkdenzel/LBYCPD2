@@ -102,10 +102,16 @@ public class categoryCreator extends AppCompatActivity {
     }
 
     private void choosepic() {
-        Intent intent=new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent,1);
+        String categoryinput=categoryname.getText().toString().trim();
+        if(categoryinput.isEmpty()){
+            categoryname.setError("Input Name of Category");
+            categoryname.requestFocus();
+        }else{
+            Intent intent=new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent,1);
+        }
     }
 
     @Override
