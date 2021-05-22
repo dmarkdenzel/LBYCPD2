@@ -1,5 +1,7 @@
 package com.example.testapp;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +39,7 @@ public class tab3 extends Fragment {
     private DatabaseReference ref,ref2;
     private String uid;
     private FirebaseStorage storage;
-    private FirebaseDatabase db;
-    private StorageReference storageReference;
+    private Button checkout;
     public TextView price;
     public ArrayList<String> itemuuid;
     public LinearLayoutManager layoutManager;
@@ -48,16 +50,13 @@ public class tab3 extends Fragment {
 
         RecyclerView shoppingcart=rootView.findViewById(R.id.shoppingcartcontainer);
 
-
-
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
         ref2=FirebaseDatabase.getInstance().getReference("items");
         uid=user.getUid();
         storage=FirebaseStorage.getInstance();
-        storageReference=storage.getReference();
         price=rootView.findViewById(R.id.totalprice);
-
+        checkout=rootView.findViewById(R.id.checkoutbutton);
         layoutManager =new LinearLayoutManager(getActivity());
         shoppingcart.setLayoutManager(layoutManager);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -82,9 +81,20 @@ public class tab3 extends Fragment {
                     adapter.setCart(cartitems,itemuuid);
                     shoppingcart.setAdapter(adapter);
 
+                    checkout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent=new Intent(rootView.getContext(),checkout.class);
+                            intent.putExtra("chosen","none");
+                            rootView.getContext().startActivity(intent);
+                            ((Activity)rootView.getContext()).finish();
+                            return;
+                        }
+                    });
 
 
                     for(int i=0;i<myArray.length;i++){
+                        int iteration=i;
                         int quantityItem=Integer.parseInt(quantity.get("items").get(myArray[i]).get("quantity"));
                         String id=myArray[i];
 
@@ -97,12 +107,15 @@ public class tab3 extends Fragment {
                                     cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
                                     adapter.notifyDataSetChanged();
                                     itemuuid.add(id);
-                                    for(int j=0;j<cartitems.size();j++){
-                                        total=total+(Double.parseDouble(cartitems.get(j).getPrice())*quantityItem);
-                                    }
-                                    if(total!=Double.parseDouble(price.getText().toString())) {
-                                        price.setText(String.valueOf(total));
-                                        ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(total));
+
+                                    if(iteration+1==myArray.length){
+                                        for(int j=0;j<cartitems.size();j++){
+                                            total=total+(Double.parseDouble(cartitems.get(j).getPrice())*Double.parseDouble(quantity.get("items").get(myArray[j]).get("quantity")));
+                                        }
+                                        if(total!=Double.parseDouble(price.getText().toString())) {
+                                            price.setText(String.valueOf(total));
+                                            ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(total));
+                                        }
                                     }
                                 }catch (Exception e){
                                     ref.child(uid).child("cart").child("items").child(id).removeValue();

@@ -51,7 +51,6 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapte
         holder.price.setText(itemA.get(position).getPrice());
 
 
-        String uid= FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseStorage storage=FirebaseStorage.getInstance();
         StorageReference storageReference=storage.getReference();
 

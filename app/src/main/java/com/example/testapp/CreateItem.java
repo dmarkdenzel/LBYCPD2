@@ -116,7 +116,7 @@ public class CreateItem extends AppCompatActivity {
             }
         });
 
-        items toadd=new items(itemname.getText().toString(),category,checker==1?"available":"none","0",priceitem.getText().toString(),stock.getText().toString(),"initial",description.getText().toString(),uid,0);
+        items toadd=new items(itemname.getText().toString().toLowerCase(),category,checker==1?"available":"none","0",priceitem.getText().toString(),stock.getText().toString(),"initial",description.getText().toString(),uid,0);
         ref2.child(uuidAsString).setValue(toadd);
         finish();
         Intent intent=new Intent(CreateItem.this,CategoryItemList.class);

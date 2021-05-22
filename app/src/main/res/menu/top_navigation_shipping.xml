@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/shippingstatus"
+        android:enabled="true"
+        android:icon="@drawable/ic_shipping"
+        android:title="Shipping"/>
+    <item
+        android:id="@+id/delivered"
+        android:enabled="true"
+        android:icon="@drawable/ic_delivered"
+        android:title="Delivered"/>
+</menu>

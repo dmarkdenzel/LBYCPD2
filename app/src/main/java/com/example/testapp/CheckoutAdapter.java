@@ -1,14 +1,12 @@
 package com.example.testapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,24 +14,35 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
-
+public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHolder>{
+    private FirebaseUser user;
+    private DatabaseReference ref;
+    private String uid;
+    private FirebaseStorage storage;
     private ArrayList<items> itemA=new ArrayList<>();
     private ArrayList<String> itemuuid=new ArrayList<>();
+    private ArrayList<String> quantity=new ArrayList<>();
     private Context context;
-    public itemAdapter(Context context) {
+    public CheckoutAdapter(Context context) {
         this.context=context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.hot_itemlist, parent, false);
+        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.checkoutlist, parent, false);
         ViewHolder holder=new ViewHolder(view);
         return holder;
     }
@@ -41,22 +50,28 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.name.setText(itemA.get(position).getName());
-        holder.category.setText(itemA.get(position).getCategory());
-        holder.rating.setText(itemA.get(position).getRating());
+        holder.quantity.setText(quantity.get(position));
         holder.price.setText(itemA.get(position).getPrice());
 
-        //ANOTHER WAY OF ADDING CLICK LISTENER
-        holder.parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context,itemorder.class);
-                intent.putExtra("item_uuid",itemuuid.get(position));
-                context.startActivity(intent);
-            }
-        });
-
+        user= FirebaseAuth.getInstance().getCurrentUser();
+        ref= FirebaseDatabase.getInstance().getReference("users");
+        uid=user.getUid();
+        storage=FirebaseStorage.getInstance();
         FirebaseStorage storage=FirebaseStorage.getInstance();
         StorageReference storageReference=storage.getReference();
+
+        ref.child(itemA.get(position).getSellerUUID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                usercred user=snapshot.getValue(usercred.class);
+                holder.seller.setText(user.getName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         if(itemA.get(position).getUrl().equals("available")){
             storageReference.child("images2/"+itemuuid.get(position)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -68,7 +83,6 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
                 }
             });
         }
-
     }
 
     @Override
@@ -76,27 +90,26 @@ public class itemAdapter extends RecyclerView.Adapter<itemAdapter.ViewHolder>{
         return itemA.size();
     }
 
-    public void setItem(ArrayList<items> item,ArrayList<String> itemuuid) {
+    public void setCheckout(ArrayList<items> item,ArrayList<String> itemuuid,ArrayList<String> quantity) {
         this.itemA = item;
         this.itemuuid=itemuuid;
+        this.quantity=quantity;
         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         private TextView name;
         private ImageView picture;
-        private MaterialCardView parent;
-        private TextView rating;
-        private TextView category;
+        private TextView quantity;
+        private TextView seller;
         private TextView price;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name=itemView.findViewById(R.id.nameofhotitem);
-            parent=itemView.findViewById(R.id.hotitemholder);
-            rating=itemView.findViewById(R.id.ratingofhotitem);
-            category=itemView.findViewById(R.id.categoryofhotitem);
-            picture=itemView.findViewById(R.id.imagehotitem);
-            price=itemView.findViewById(R.id.price);
+            name=itemView.findViewById(R.id.nameofcheckoutitem);
+            quantity=itemView.findViewById(R.id.quantity);
+            seller=itemView.findViewById(R.id.sellerofcheckoutitem);
+            picture=itemView.findViewById(R.id.imagecheckoutitem);
+            price=itemView.findViewById(R.id.pricecheckoutitem);
         }
 
     }

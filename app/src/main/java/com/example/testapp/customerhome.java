@@ -28,11 +28,22 @@ public class customerhome extends AppCompatActivity {
         home=new tab1();
         search=new tab2();
         shoppingcart=new tab3();
-        delivery=new tab4();
 
         //PLACES A DEFAULT PAGE WHEN THE APPLICATION IS OPENED SPECIFICALLY THE FIRST TAB OF NAV BAR
-        Fragment selected=home;
-        getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
+
+        if(getIntent().getStringExtra("page")!=null){
+            String back=getIntent().getStringExtra("page");
+            if(Integer.valueOf(back)==3){
+                Fragment selected=shoppingcart;
+                getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
+                navbar.setSelectedItemId(R.id.item3);
+            }
+
+        }else{
+            Fragment selected=home;
+            getSupportFragmentManager().beginTransaction().replace(R.id.frag,selected).commit();
+        }
+
 
 
 
@@ -54,7 +65,7 @@ public class customerhome extends AppCompatActivity {
                         selected=shoppingcart;
                         break;
                     case R.id.item4:
-                        selected=delivery;
+                        selected=new tab4();
                         break;
                     default:
                         break;
