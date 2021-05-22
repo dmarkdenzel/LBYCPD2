@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class checkout extends AppCompatActivity {
 
@@ -183,8 +185,8 @@ public class checkout extends AppCompatActivity {
             public void onClick(View v) {
                 finish();
                 Intent intent=new Intent(checkout.this,customerhome.class);
-                intent.putExtra("page","3");
                 startActivity(intent);
+                transfer(selected);
                 return;
             }
         });
@@ -224,6 +226,55 @@ public class checkout extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Map <String, String> map = (Map)snapshot.getValue();
                 total.setText(map.get("subtotal"));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void transfer(String choice){
+        UUID uuid = UUID. randomUUID();
+        String uuidAsString = uuid. toString();
+        ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map <String, Map<String,Map<String,String>>> itemlist=(Map)snapshot.getValue();
+                Set<String> test=itemlist.get("cart").get("items").keySet();
+                String[] myArray = new String[test.size()];
+                test.toArray(myArray);
+
+                Log.d("test","test1");
+                Map <String, Map<String,Map<String,Map<String,String>>>> map2=(Map)snapshot.getValue();
+                Map <String, Map<String,String>> map = (Map)snapshot.getValue();
+
+                ref.child(uid).child("order").child(uuidAsString).child("subtotal").setValue(map.get("cart").get("subtotal"));
+                ref.child(uid).child("order").child(uuidAsString).child("payment").setValue(choice);
+                for(int i=0;i<myArray.length;i++){
+                    String quantityItem=map2.get("cart").get("items").get(myArray[i]).get("quantity");
+                    String id=myArray[i];
+
+                    ref2.child(myArray[i]).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            items itemProf=snapshot.getValue(items.class);
+                            ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).setValue(itemProf);
+                            ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("quantity").setValue(quantityItem);
+                            ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("status").setValue("shipping");
+
+                            ref.child(itemProf.getSellerUUID()).child("orders").child(uid).child(uuidAsString).setValue(quantityItem);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+                ref.child(uid).child("cart").removeValue();
+
             }
 
             @Override

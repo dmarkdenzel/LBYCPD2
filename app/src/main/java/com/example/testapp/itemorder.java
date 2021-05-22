@@ -142,22 +142,40 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
                 ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Map <String,Map<String,String>> subTotalVal = (Map)snapshot.getValue();
-                        double currentTotal=Double.parseDouble(subTotalVal.get("cart").get("subtotal"));
-                        double priceToAdd=initprice*currentquantity;
-                        ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(currentTotal+priceToAdd));
+                        try{
+                            Map <String,Map<String,String>> subTotalVal = (Map)snapshot.getValue();
+                            double currentTotal=Double.parseDouble(subTotalVal.get("cart").get("subtotal"));
+                            double priceToAdd=initprice*currentquantity;
+                            ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(currentTotal+priceToAdd));
 
-                        if(snapshot.child("cart").hasChild("items")){
-                            Map <String,Map<String,Map<String,Map<String,String>>>> map = (Map)snapshot.getValue();
-                            if(map.get("cart").get("items").containsKey(itemuuid)){
-                                int quantityInDatabase=Integer.parseInt(map.get("cart").get("items").get(itemuuid).get("quantity"));
-                                ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity+quantityInDatabase));
-                            }else {
+                            if(snapshot.child("cart").hasChild("items")){
+                                Map <String,Map<String,Map<String,Map<String,String>>>> map = (Map)snapshot.getValue();
+                                if(map.get("cart").get("items").containsKey(itemuuid)){
+                                    int quantityInDatabase=Integer.parseInt(map.get("cart").get("items").get(itemuuid).get("quantity"));
+                                    ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity+quantityInDatabase));
+                                }else {
+                                    ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                                }
+                            }else{
                                 ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
                             }
-                        }else{
-                            ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                        }catch (Exception e){
+                            double priceToAdd=initprice*currentquantity;
+                            ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(priceToAdd));
+
+                            if(snapshot.child("cart").hasChild("items")){
+                                Map <String,Map<String,Map<String,Map<String,String>>>> map = (Map)snapshot.getValue();
+                                if(map.get("cart").get("items").containsKey(itemuuid)){
+                                    int quantityInDatabase=Integer.parseInt(map.get("cart").get("items").get(itemuuid).get("quantity"));
+                                    ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity+quantityInDatabase));
+                                }else {
+                                    ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                                }
+                            }else{
+                                ref.child(uid).child("cart").child("items").child(itemuuid).child("quantity").setValue(String.valueOf(currentquantity));
+                            }
                         }
+
 
                     }
 
