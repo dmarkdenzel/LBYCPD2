@@ -1,6 +1,8 @@
 package com.example.testapp;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +37,6 @@ public class storeAdapter extends RecyclerView.Adapter<storeAdapter.ViewHolder>{
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.storelist, parent, false);
         ViewHolder holder=new ViewHolder(view);
-
-        //WAY OF ADDING CLICK LISTENER
-//        holder.store.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(parent.getContext(),"works: "+String.valueOf(holder.getAdapterPosition()),Toast.LENGTH_SHORT).show();
-//            }
-//        });
         return holder;
     }
 
@@ -52,12 +46,12 @@ public class storeAdapter extends RecyclerView.Adapter<storeAdapter.ViewHolder>{
         holder.adress.setText(storeA.get(position).getAdress());
         holder.rating.setText(storeA.get(position).getRating());
 
-        //ANOTHER WAY OF ADDING CLICK LISTENER
         holder.parent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                System.out.println(position);
-                Toast.makeText(context,String.valueOf(position),Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent(context, InsideStore.class);
+                intent.putExtra("storeuuid",storeuuid.get(position));
+                ((Activity)context).startActivity(intent);
             }
         });
 

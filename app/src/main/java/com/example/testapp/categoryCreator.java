@@ -43,10 +43,10 @@ public class categoryCreator extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
         Intent intent=new Intent(categoryCreator.this,sellerhome.class);
         intent.putExtra("page","3");
         startActivity(intent);
+        finish();
         return;
     }
 
@@ -93,10 +93,10 @@ public class categoryCreator extends AppCompatActivity {
             categoryname.requestFocus();
         }else{
             ref.child(uid).child("categories").child(categoryname.getText().toString()).child("url").setValue(checker==1?"available":"none");
-            finish();
             Intent intent=new Intent(categoryCreator.this,sellerhome.class);
             intent.putExtra("page","3");
             startActivity(intent);
+            finish();
             return;
         }
     }

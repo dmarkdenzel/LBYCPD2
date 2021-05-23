@@ -93,22 +93,26 @@ public class CategoryItemList extends AppCompatActivity {
 
                     Log.d("Array List", Arrays.toString(myArray));
 
-                    for(int i=0;i<myArray.length;i++){
-                        itemuuid.add(0,myArray[i]);
-                        ref2.child(myArray[i]).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                items itemprof=snapshot.getValue(items.class);
-                                Log.d("name",item.toString());
+
+
+                    ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                            for(int i=0;i<myArray.length;i++){
+                                items itemprof=snapshot.child(myArray[i]).getValue(items.class);
+                                itemuuid.add(0,myArray[i]);
                                 item.add(0,itemprof);
                                 test2.notifyDataSetChanged();
                             }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
 
-                            }
-                        });
-                    }
+                        }
+                    });
+
+
                     ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
 
                         @Override

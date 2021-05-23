@@ -17,7 +17,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class tab4 extends Fragment {
 
-    public Fragment ship,delivered;
+    public Fragment ship,delivered,torate;
     public BottomNavigationView navbar;
 
     @Override
@@ -27,6 +27,7 @@ public class tab4 extends Fragment {
         navbar=rootView.findViewById(R.id.topnavbar);
         ship=new Tab1ship();
         delivered=new Tab2ship();
+        torate=new Tab3ship();
 
         Fragment selected=ship;
         getFragmentManager().beginTransaction().replace(R.id.innerfrag,selected).commit();
@@ -38,11 +39,13 @@ public class tab4 extends Fragment {
                 switch(item.getItemId()){
                     //DEPENDING ON THE TAB THE FRAGMENT CHANGES TO THE DESIRED NEW CLASS
                     case R.id.shippingstatus:
-                        selected=ship;
+                        selected=new Tab1ship();
                         break;
                     case R.id.delivered:
-                        selected=delivered;
+                        selected=new Tab2ship();
                         break;
+                    case R.id.torate:
+                        selected=new Tab3ship();
                     default:
                         break;
                 }

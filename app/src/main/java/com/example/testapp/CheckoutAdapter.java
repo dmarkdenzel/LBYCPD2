@@ -27,10 +27,6 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHolder>{
-    private FirebaseUser user;
-    private DatabaseReference ref;
-    private String uid;
-    private FirebaseStorage storage;
     private ArrayList<items> itemA=new ArrayList<>();
     private ArrayList<String> itemuuid=new ArrayList<>();
     private ArrayList<String> quantity=new ArrayList<>();
@@ -52,26 +48,10 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
         holder.name.setText(itemA.get(position).getName());
         holder.quantity.setText(quantity.get(position));
         holder.price.setText(itemA.get(position).getPrice());
+        holder.seller.setText(itemA.get(position).getBrand());
 
-        user= FirebaseAuth.getInstance().getCurrentUser();
-        ref= FirebaseDatabase.getInstance().getReference("users");
-        uid=user.getUid();
-        storage=FirebaseStorage.getInstance();
         FirebaseStorage storage=FirebaseStorage.getInstance();
         StorageReference storageReference=storage.getReference();
-
-        ref.child(itemA.get(position).getSellerUUID()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                usercred user=snapshot.getValue(usercred.class);
-                holder.seller.setText(user.getName());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
         if(itemA.get(position).getUrl().equals("available")){
             storageReference.child("images2/"+itemuuid.get(position)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -111,6 +91,5 @@ public class CheckoutAdapter extends RecyclerView.Adapter<CheckoutAdapter.ViewHo
             picture=itemView.findViewById(R.id.imagecheckoutitem);
             price=itemView.findViewById(R.id.pricecheckoutitem);
         }
-
     }
 }

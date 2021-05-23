@@ -183,10 +183,10 @@ public class checkout extends AppCompatActivity {
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
                 Intent intent=new Intent(checkout.this,customerhome.class);
                 startActivity(intent);
                 transfer(selected);
+                finish();
                 return;
             }
         });
@@ -262,7 +262,7 @@ public class checkout extends AppCompatActivity {
                             items itemProf=snapshot.getValue(items.class);
                             ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).setValue(itemProf);
                             ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("quantity").setValue(quantityItem);
-                            ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("status").setValue("shipping");
+                            ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("status").setValue("Processing");
 
                             ref.child(itemProf.getSellerUUID()).child("orders").child(uid).child(uuidAsString).setValue(quantityItem);
                         }
