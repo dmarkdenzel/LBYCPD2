@@ -13,7 +13,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class sellerhome extends AppCompatActivity {
 
-    public Fragment analytics, orders, add, reviews, profile;
+    public Fragment analytics, orders, add, reviews;
     public BottomNavigationView navbar;
 
     @Override
@@ -29,7 +29,6 @@ public class sellerhome extends AppCompatActivity {
         orders= new tab2Seller();
         add= new tab3Seller();
         reviews= new tab4Seller();
-        profile= new tab5Seller();
 
         String choice=getIntent().getStringExtra("page");
 
@@ -57,9 +56,6 @@ public class sellerhome extends AppCompatActivity {
                         break;
                     case R.id.review:
                         selected=reviews;
-                        break;
-                    case R.id.profile:
-                        selected=profile;
                         break;
                     default:
                         break;

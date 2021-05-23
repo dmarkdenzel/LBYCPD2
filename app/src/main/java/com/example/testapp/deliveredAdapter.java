@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +31,7 @@ import com.google.firebase.storage.StorageReference;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class deliveredAdapter extends RecyclerView.Adapter<deliveredAdapter.ViewHolder>{
     private FirebaseUser user;
@@ -40,6 +43,8 @@ public class deliveredAdapter extends RecyclerView.Adapter<deliveredAdapter.View
     private ArrayList<String> itemuuid=new ArrayList<>();
     private ArrayList<String> orderdivide=new ArrayList<>();
     private ArrayList<String> seller=new ArrayList<>();
+    private Fragment currentFragment;
+    private FragmentTransaction fragmentTransaction;
     private Context context;
 
     public deliveredAdapter(Context context) {
@@ -77,8 +82,25 @@ public class deliveredAdapter extends RecyclerView.Adapter<deliveredAdapter.View
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         ShipItem curritem=snapshot.getValue(ShipItem.class);
+                        ref.child(curritem.getSellerUUID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Map<String,String> map=(Map) snapshot.getValue();
+                                double total=Double.parseDouble(map.get("sales"))+(Double.parseDouble(curritem.getPrice())*Double.parseDouble(curritem.getQuantity()));
+                                ref.child(curritem.getSellerUUID()).child("sales").setValue(String.valueOf(total));
+                            }
 
-                        Log.d("value",curritem.toString());
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        ref.child(uid).child("delivered").child(orderdivide.get(position)).child(seller.get(position)).child(itemuuid.get(position)).removeValue();
+                        ref.child(uid).child("torate").child(itemuuid.get(position)).setValue(curritem);
+                        ref.child(seller.get(position)).child("notifs").child(uid).setValue("Order Recieved");
+                        fragmentTransaction.detach(currentFragment);
+                        fragmentTransaction.attach(currentFragment);
+                        fragmentTransaction.commit();
                     }
 
                     @Override
@@ -92,7 +114,37 @@ public class deliveredAdapter extends RecyclerView.Adapter<deliveredAdapter.View
         holder.notdelivered.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ShipItem curritem=snapshot.child(uid).child("delivered").child(orderdivide.get(position)).child(seller.get(position)).child(itemuuid.get(position)).getValue(ShipItem.class);
+                        curritem.setStatus("Processing");
+                        if(snapshot.child(uid).child("order").child(orderdivide.get(position)).child("subtotal").exists()){
+                            Map<String, String> map= (Map) snapshot.child(uid).child("order").child(orderdivide.get(position)).getValue();
+                            double total=Double.parseDouble(map.get("subtotal"))+(Double.valueOf(curritem.getPrice())*Double.valueOf(curritem.getQuantity()));
+                            ref.child(uid).child("delivered").child(orderdivide.get(position)).child(seller.get(position)).child(itemuuid.get(position)).removeValue();
+                            ref.child(uid).child("order").child(orderdivide.get(position)).child(seller.get(position)).child(itemuuid.get(position)).setValue(curritem);
+                            ref.child(uid).child("order").child(orderdivide.get(position)).child("subtotal").setValue(String.valueOf(total));
+                            ref.child(seller.get(position)).child("orders").child(uid).child(orderdivide.get(position)).setValue("1");
 
+                            Log.d("total",String.valueOf(total));
+                        }else{
+                            ref.child(uid).child("delivered").child(orderdivide.get(position)).child(seller.get(position)).child(itemuuid.get(position)).removeValue();
+                            ref.child(uid).child("order").child(orderdivide.get(position)).child(seller.get(position)).child(itemuuid.get(position)).setValue(curritem);
+                            ref.child(uid).child("order").child(orderdivide.get(position)).child("subtotal").setValue(String.valueOf((Double.valueOf(curritem.getPrice())*Double.valueOf(curritem.getQuantity()))));
+                            ref.child(seller.get(position)).child("orders").child(uid).child(orderdivide.get(position)).setValue("1");
+                        }
+                        ref.child(seller.get(position)).child("notifs").child(uid).setValue("Order NOT Recieved");
+                        fragmentTransaction.detach(currentFragment);
+                        fragmentTransaction.attach(currentFragment);
+                        fragmentTransaction.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
 
@@ -113,11 +165,13 @@ public class deliveredAdapter extends RecyclerView.Adapter<deliveredAdapter.View
         return shipA.size();
     }
 
-    public void setItem(ArrayList<ShipItem> item,ArrayList<String> itemuuid,ArrayList<String> orderdivide,ArrayList<String> seller) {
+    public void setItem(ArrayList<ShipItem> item,ArrayList<String> itemuuid,ArrayList<String> orderdivide,ArrayList<String> seller, Fragment currentFragment, FragmentTransaction fragmentTransaction) {
         this.shipA = item;
         this.itemuuid=itemuuid;
         this.orderdivide=orderdivide;
         this.seller=seller;
+        this.currentFragment=currentFragment;
+        this.fragmentTransaction=fragmentTransaction;
         notifyDataSetChanged();
     }
 

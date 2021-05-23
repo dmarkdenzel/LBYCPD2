@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,7 +60,7 @@ public class Tab1ship extends Fragment {
                     Set<String> test=map.keySet();
                     String[] myArray = new String[test.size()];
                     test.toArray(myArray);
-                    Log.d("values", Arrays.toString(myArray));//value of orders
+//                    Log.d("values", Arrays.toString(myArray));//value of orders
                     ArrayList<ArrayList<ShipItem>>shipslists=new ArrayList<>();
                     ArrayList<ArrayList<String>> itemuuids=new ArrayList<>();
                     ArrayList<String> price=new ArrayList<>();
@@ -100,6 +101,29 @@ public class Tab1ship extends Fragment {
                     ShipAdapter adapter=new ShipAdapter(rootView.getContext(),getActivity());
                     adapter.setItem(shipslists,itemuuids,price);
                     rc.setAdapter(adapter);
+
+                    ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+
+                        @Override
+                        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                            return false;
+                        }
+
+                        @Override
+                        public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                            int position=viewHolder.getAdapterPosition();
+
+                            ref.child(uid).child("order").child(myArray[position]).removeValue();
+                            shipslists.remove(position);
+                            itemuuids.remove(position);
+                            adapter.notifyDataSetChanged();
+
+
+
+                        }
+                    };
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+                    itemTouchHelper.attachToRecyclerView(rc);
 
                 }
             }

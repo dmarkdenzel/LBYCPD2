@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -92,9 +93,11 @@ public class Tab2ship extends Fragment {
                             }
                         }
                     }
-                    Log.d("values", String.valueOf(shipitems.size()));
+                    Fragment currentFragment = getActivity().getSupportFragmentManager().findFragmentById(R.id.innerfrag);
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//                    Log.d("values", String.valueOf(shipitems.size()));
                     deliveredAdapter adapter =new deliveredAdapter(rootView.getContext());
-                    adapter.setItem(shipitems,itemuuids,orderdivide,seller);
+                    adapter.setItem(shipitems,itemuuids,orderdivide,seller,currentFragment,fragmentTransaction);
                     rc.setAdapter(adapter);
 
                 }

@@ -76,32 +76,38 @@ public class tab2Seller extends Fragment {
 
                     for(int j=0;j<myArray.length;j++){
                         for(int k=0;k<items.get(j).length;k++){
-                            Map <String, Map<String,String>> map3 = (Map)snapshot.child(myArray[j]).child("order").child(items.get(j)[k]).child(uid).getValue();
-                            usercred buyer2=snapshot.child(myArray[j]).getValue(usercred.class);
-                            Set<String> test3=map3.keySet();
-                            String[] myArray3 = new String[test3.size()];
-                            test3.toArray(myArray3);
-                            ArrayList<ShipItem> shipslist= new ArrayList<>();
-                            ArrayList<String> itemuuid= new ArrayList<>();
-                            ArrayList<usercred> users=new ArrayList<>();
-                            ArrayList<String> uuid=new ArrayList<>();
-                            ArrayList<String> orderuuid=new ArrayList<>();
-                            names.add(buyer2.getName());
+                            try{
+                                Map <String, Map<String,String>> map3 = (Map)snapshot.child(myArray[j]).child("order").child(items.get(j)[k]).child(uid).getValue();
+                                usercred buyer2=snapshot.child(myArray[j]).getValue(usercred.class);
+                                Set<String> test3=map3.keySet();
+                                String[] myArray3 = new String[test3.size()];
+                                test3.toArray(myArray3);
+                                ArrayList<ShipItem> shipslist= new ArrayList<>();
+                                ArrayList<String> itemuuid= new ArrayList<>();
+                                ArrayList<usercred> users=new ArrayList<>();
+                                ArrayList<String> uuid=new ArrayList<>();
+                                ArrayList<String> orderuuid=new ArrayList<>();
+                                names.add(buyer2.getName());
 
-                            for(int l=0;l<myArray3.length;l++){
-                                ShipItem item=snapshot.child(myArray[j]).child("order").child(items.get(j)[k]).child(uid).child(myArray3[l]).getValue(ShipItem.class);
-                                usercred buyer=snapshot.child(myArray[j]).getValue(usercred.class);
-                                users.add(buyer);
-                                uuid.add(myArray[j]);
-                                orderuuid.add(items.get(j)[k]);
-                                shipslist.add(item);
-                                itemuuid.add(myArray3[l]);
+                                for(int l=0;l<myArray3.length;l++){
+                                    ShipItem item=snapshot.child(myArray[j]).child("order").child(items.get(j)[k]).child(uid).child(myArray3[l]).getValue(ShipItem.class);
+                                    usercred buyer=snapshot.child(myArray[j]).getValue(usercred.class);
+                                    users.add(buyer);
+                                    uuid.add(myArray[j]);
+                                    orderuuid.add(items.get(j)[k]);
+                                    shipslist.add(item);
+                                    itemuuid.add(myArray3[l]);
+                                }
+                                shipslists.add(shipslist);
+                                itemuuids.add(itemuuid);
+                                userprofs.add(users);
+                                useruids.add(uuid);
+                                orderuuids.add(orderuuid);
+                            }catch (Exception e){
+                                ref.child(uid).child("orders").child(myArray[j]).child(items.get(j)[k]).removeValue();
+                                ref.child(uid).child("notifs").child(myArray[j]).setValue("An Order is Cancelled");
                             }
-                            shipslists.add(shipslist);
-                            itemuuids.add(itemuuid);
-                            userprofs.add(users);
-                            useruids.add(uuid);
-                            orderuuids.add(orderuuid);
+
                         }
                     }
 

@@ -20,9 +20,4 @@
         android:enabled="true"
         android:icon="@drawable/ic_star"
         android:title="Reviews"/>
-    <item
-        android:id="@+id/profile"
-        android:enabled="true"
-        android:icon="@drawable/ic_profile"
-        android:title="Profile"/>
 </menu>

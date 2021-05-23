@@ -265,6 +265,7 @@ public class checkout extends AppCompatActivity {
                             ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("status").setValue("Processing");
 
                             ref.child(itemProf.getSellerUUID()).child("orders").child(uid).child(uuidAsString).setValue(quantityItem);
+                            ref.child(itemProf.getSellerUUID()).child("notifs").child(uid).setValue("An Order is Made");
                         }
 
                         @Override

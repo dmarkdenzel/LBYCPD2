@@ -145,6 +145,8 @@ public class profilecreation extends AppCompatActivity {
                 }else{
                     ref.child(uid).child("sales").setValue("0");
                     ref.child(uid).child("rating").setValue("0");
+                    ref.child(uid).child("total").setValue("0");
+                    ref.child(uid).child("inputs").setValue("0");
                 }
                 ref.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
