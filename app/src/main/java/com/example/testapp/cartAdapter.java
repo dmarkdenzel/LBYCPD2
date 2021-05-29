@@ -4,9 +4,11 @@ package com.example.testapp;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
     private FirebaseStorage storage;
     private StorageReference storageReference;
     private TextView totalprice;
+    private Button button;
     private ArrayList<carts> cartA=new ArrayList<>();
     private ArrayList<String> itemuuid=new ArrayList<>();
     private Context context;
@@ -62,8 +65,9 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
         totalprice=rootView.findViewById(R.id.totalprice);
+        button=rootView.findViewById(R.id.checkoutbutton);
 
-        holder.name.setText(cartA.get(position).getName());
+        holder.name.setText(Integer.parseInt(cartA.get(position).getQuantity())>Integer.parseInt(cartA.get(position).getStock())?"OVER THE STOCK":cartA.get(position).getName());
         holder.category.setText(cartA.get(position).getCategory());
         holder.quantity.setText(cartA.get(position).getQuantity());
         holder.price.setText(cartA.get(position).getPrice());
@@ -85,12 +89,18 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
                 double initialamount=Double.parseDouble(cartA.get(position).getPrice());
                 double currentamount=Double.parseDouble(totalprice.getText().toString());
 
+
                 ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(currentamount+initialamount));
                 ref.child(uid).child("cart").child("items").child(itemuuid.get(position)).child("quantity").setValue(String.valueOf(currentquantity+1));
 
                 holder.quantity.setText(String.valueOf(currentquantity+1));
                 totalprice.setText(String.valueOf(currentamount+initialamount));
                 cartA.get(position).setQuantity(String.valueOf(currentquantity+1));
+
+                if(Integer.parseInt(cartA.get(position).getQuantity())>Integer.parseInt(cartA.get(position).getStock())){
+                    holder.name.setText("OVER THE STOCK");
+                    button.setEnabled(false);
+                }
             }
         });
 
@@ -101,12 +111,25 @@ public class cartAdapter  extends RecyclerView.Adapter<cartAdapter.ViewHolder>{
                 double initialamount=Double.parseDouble(cartA.get(position).getPrice());
                 double currentamount=Double.parseDouble(totalprice.getText().toString());
 
+                int checker=0;
+
                 ref.child(uid).child("cart").child("subtotal").setValue(currentquantity<2?String.valueOf(currentamount):String.valueOf(currentamount-initialamount));
                 ref.child(uid).child("cart").child("items").child(itemuuid.get(position)).child("quantity").setValue(currentquantity<3?"1":String.valueOf(currentquantity-1));
 
                 holder.quantity.setText(currentquantity<3?"1":String.valueOf(currentquantity-1));
                 totalprice.setText(currentquantity<2?String.valueOf(currentamount):String.valueOf(currentamount-initialamount));
                 cartA.get(position).setQuantity(currentquantity<3?"1":String.valueOf(currentquantity-1));
+
+                for(int q=0;q<cartA.size();q++){
+                    if(Integer.parseInt(cartA.get(q).getQuantity())>Integer.parseInt(cartA.get(q).getStock())){
+                        checker++;
+                    }
+                }
+
+                if(checker==0){
+                    holder.name.setText(cartA.get(position).getName());
+                    button.setEnabled(true);
+                }
             }
         });
 

@@ -260,10 +260,12 @@ public class checkout extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             items itemProf=snapshot.getValue(items.class);
+                            int newstock=Integer.valueOf(itemProf.getStock())-Integer.valueOf(quantityItem);
                             ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).setValue(itemProf);
                             ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("quantity").setValue(quantityItem);
                             ref.child(uid).child("order").child(uuidAsString).child(itemProf.getSellerUUID()).child(id).child("status").setValue("Processing");
 
+                            ref2.child(id).child("stock").setValue(String.valueOf(newstock));
                             ref.child(itemProf.getSellerUUID()).child("orders").child(uid).child(uuidAsString).setValue(quantityItem);
                             ref.child(itemProf.getSellerUUID()).child("notifs").child(uid).setValue("An Order is Made");
                         }

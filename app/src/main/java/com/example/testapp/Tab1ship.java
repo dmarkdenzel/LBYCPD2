@@ -113,10 +113,36 @@ public class Tab1ship extends Fragment {
                         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                             int position=viewHolder.getAdapterPosition();
 
-                            ref.child(uid).child("order").child(myArray[position]).removeValue();
-                            shipslists.remove(position);
-                            itemuuids.remove(position);
-                            adapter.notifyDataSetChanged();
+
+
+                            ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    ArrayList<ShipItem> itemsreturned =  shipslists.get(position);
+                                    ArrayList<String> itemsreturneduuid = itemuuids.get(position);
+                                    for(int q=0;q<itemsreturned.size();q++){
+                                        items itemProf=snapshot.child(itemsreturneduuid.get(q)).getValue(items.class);
+                                        int newstock=Integer.valueOf(itemsreturned.get(q).getQuantity())+Integer.valueOf(itemProf.getStock());
+                                        ref2.child(itemsreturneduuid.get(q)).child("stock").setValue(String.valueOf(newstock));
+                                    }
+                                    ref.child(uid).child("order").child(myArray[position]).removeValue();
+                                    shipslists.remove(position);
+                                    itemuuids.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
+
+
+
+
+
 
 
 

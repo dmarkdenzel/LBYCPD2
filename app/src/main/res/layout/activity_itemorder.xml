@@ -225,12 +225,11 @@
         android:layout_marginBottom="20dp"
         android:id="@+id/quantityleft"/>
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/itemcount"
         android:text="01"
-        android:textSize="30dp"
         android:textColor="@color/soothing"
         android:layout_toLeftOf="@+id/quantityright"
         android:layout_marginBottom="20dp"

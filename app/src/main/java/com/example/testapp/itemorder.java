@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -35,7 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class itemorder extends AppCompatActivity implements View.OnClickListener {
-    public TextView itemordername,categorey,description,stock,brand,price,rating,quantity;
+    public TextView itemordername,categorey,description,stock,brand,price,rating;
+    public EditText quantity;
     public ImageButton inc,dec,returnbutton,arrow;
     public Button addtocart;
     public ImageView imageorder;
@@ -99,6 +103,10 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
                 rating.setText(item.getRating());
                 price.setText(item.getPrice());
 
+                if(Integer.valueOf(item.stock)<=0){
+                    addtocart.setEnabled(false);
+                }
+
             }
 
             @Override
@@ -118,6 +126,28 @@ public class itemorder extends AppCompatActivity implements View.OnClickListener
                 Glide.with(getBaseContext())
                         .load(uri.toString().trim())
                         .into(imageorder);
+            }
+        });
+        quantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(quantity.getText().toString().equals("")){
+                    quantity.setText("0");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(Integer.valueOf(quantity.getText().toString())>Integer.valueOf(stock.getText().toString())){
+                    addtocart.setEnabled(false);
+                }else{
+                    addtocart.setEnabled(true);
+                }
             }
         });
 

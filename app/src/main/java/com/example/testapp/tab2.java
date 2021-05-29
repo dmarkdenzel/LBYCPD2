@@ -115,6 +115,7 @@ public class tab2 extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 try{
+                    list2.setVisibility(View.VISIBLE);
                     Map<String, Map<String,Object>> storeProf= (Map)snapshot.getValue();
                     Set<String> keys=storeProf.keySet();
                     String[] myArray = new String[keys.size()];
@@ -134,7 +135,9 @@ public class tab2 extends Fragment {
                     list2.setAdapter(test2);
 
                 }catch (Exception e){
-                    Toast.makeText(context,"Not Found",Toast.LENGTH_SHORT).show();
+                    if(list2.getVisibility()==View.VISIBLE){
+                        list2.setVisibility(View.GONE);
+                    }
                 }
 
             }

@@ -64,6 +64,9 @@ public class CreateItem extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_item);
 
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
         ref2= FirebaseDatabase.getInstance().getReference("items");
@@ -92,7 +95,28 @@ public class CreateItem extends AppCompatActivity {
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createitem();
+                String nameinput=itemname.getText().toString().trim();
+                String stockinput=stock.getText().toString().trim();
+                String priceinput=priceitem.getText().toString().trim();
+                String descinput=description.getText().toString().trim();
+                if (nameinput.isEmpty()) {
+                    itemname.setError("Email is required");
+                    itemname.requestFocus();
+                    if (stockinput.isEmpty()) {
+                        stock.setError("stock is required");
+                        stock.requestFocus();
+                        if (priceinput.isEmpty()) {
+                            priceitem.setError("price is required");
+                            priceitem.requestFocus();
+                            if (descinput.isEmpty()) {
+                                description.setError("description is required");
+                                description.requestFocus();
+                            }
+                        }
+                    }
+                }else{
+                    createitem();
+                }
             }
         });
     }

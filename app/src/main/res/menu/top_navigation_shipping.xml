@@ -4,7 +4,7 @@
         android:id="@+id/shippingstatus"
         android:enabled="true"
         android:icon="@drawable/ic_shipping"
-        android:title="Shipping"/>
+        android:title="Processing"/>
     <item
         android:id="@+id/delivered"
         android:enabled="true"
@@ -14,5 +14,5 @@
         android:id="@+id/torate"
         android:enabled="true"
         android:icon="@drawable/ic_star"
-        android:title="Delivered"/>
+        android:title="Rating"/>
 </menu>

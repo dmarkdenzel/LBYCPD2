@@ -104,9 +104,22 @@ public class tab3 extends Fragment {
                                 try{
                                     double total=0;
                                     items itemProf=snapshot.getValue(items.class);
-                                    cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
-                                    adapter.notifyDataSetChanged();
-                                    itemuuid.add(id);
+                                    if (quantityItem>Integer.valueOf(itemProf.getStock())){
+                                        cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
+                                        adapter.notifyDataSetChanged();
+                                        checkout.setEnabled(false);
+                                        itemuuid.add(id);
+                                    }else if(Integer.valueOf(itemProf.getStock())>0){
+                                        cartitems.add(new carts(itemProf.getName(),itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
+                                        adapter.notifyDataSetChanged();
+                                        itemuuid.add(id);
+                                    }else{
+                                        cartitems.add(new carts("OUT OF STOCK",itemProf.getCategory(),itemProf.getUrl(),itemProf.getRating(),itemProf.getPrice(),itemProf.getStock(),itemProf.getBrand(),itemProf.getDescription(),String.valueOf(quantityItem)));
+                                        adapter.notifyDataSetChanged();
+                                        checkout.setEnabled(false);
+                                        itemuuid.add(id);
+                                    }
+
 
                                     if(iteration+1==myArray.length){
                                         for(int j=0;j<cartitems.size();j++){
@@ -140,12 +153,25 @@ public class tab3 extends Fragment {
 
                         @Override
                         public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                            int checker=0;
                             int position = viewHolder.getAdapterPosition();
                             double sum=Double.parseDouble(price.getText().toString());
                             sum-=(Double.parseDouble(cartitems.get(position).getPrice())*(Double.parseDouble(quantity.get("items").get(myArray[position]).get("quantity"))));
 
                             cartitems.remove(position);
                             itemuuid.remove(position);
+
+                            for(int q=0;q<cartitems.size();q++){
+                                if((Integer.valueOf(cartitems.get(q).getStock())==0)||(Integer.valueOf(cartitems.get(q).getStock())<Integer.valueOf(cartitems.get(q).getQuantity()))){
+                                    checker++;
+                                }
+                            }
+
+                            if(checker==0){
+                                checkout.setEnabled(true);
+                            }
+
+
 
                             ref.child(uid).child("cart").child("items").child(myArray[position]).removeValue();
                             ref.child(uid).child("cart").child("subtotal").setValue(String.valueOf(sum));

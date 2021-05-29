@@ -64,6 +64,13 @@ public class CategoryItemAdapter extends RecyclerView.Adapter<CategoryItemAdapte
                     act.startActivity(intent);
                     act.finish();
                     return;
+                }else{
+                    Intent intent=new Intent(act.getBaseContext(),ItemEdit.class);
+                    intent.putExtra("itemuuid",itemuuid.get(position));
+                    intent.putExtra("category",category);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    act.startActivity(intent);
+                    act.finish();
                 }
             }
         });

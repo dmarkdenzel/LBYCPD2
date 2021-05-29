@@ -65,10 +65,12 @@ public class InsideStore extends AppCompatActivity {
         ref.child(storeuuid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                usercred storeprof=snapshot.getValue(usercred.class);
                 Map <String, Map<String,String>> map = (Map)snapshot.child("categories").getValue();
                 Set<String> test=map.keySet();
                 String[] myArray = new String[test.size()];
                 test.toArray(myArray);
+                name.setText(storeprof.getName());
                 ArrayList<categories> categorylist=new ArrayList<>();
                 ArrayList<items> itemlist=new ArrayList<>();
                 ArrayList<String> itemuuid=new ArrayList<>();
