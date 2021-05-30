@@ -69,7 +69,6 @@ public class tab1 extends Fragment {
         stores= rootView.findViewById(R.id.storeslist);
         hotitems= rootView.findViewById(R.id.hotitemslist);
 
-        image=rootView.findViewById(R.id.imageView);
         name=rootView.findViewById(R.id.name);
         user= FirebaseAuth.getInstance().getCurrentUser();
         ref= FirebaseDatabase.getInstance().getReference("users");
@@ -77,6 +76,15 @@ public class tab1 extends Fragment {
         uid=user.getUid();
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
+
+        image=rootView.findViewById(R.id.imageView);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(rootView.getContext(), openProfile.class);
+                startActivity(intent);
+            }
+        });
 
         LinearLayoutManager layoutManager =new LinearLayoutManager(getActivity());
         LinearLayoutManager layoutManager2 =new LinearLayoutManager(getActivity());

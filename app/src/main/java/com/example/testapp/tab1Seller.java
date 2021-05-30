@@ -1,5 +1,6 @@
 package com.example.testapp;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -57,12 +58,20 @@ public class tab1Seller extends Fragment {
         storage=FirebaseStorage.getInstance();
         storageReference=storage.getReference();
 
-        image=rootView.findViewById(R.id.imagestore);
         name=rootView.findViewById(R.id.namestore);
         purchase=rootView.findViewById(R.id.actualpurchases);
         rating=rootView.findViewById(R.id.actualrating);
         sales=rootView.findViewById(R.id.actualsales);
         rv1=rootView.findViewById(R.id.notiflist);
+
+        image=rootView.findViewById(R.id.imagestore);
+        image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(rootView.getContext(), openProfile.class);
+                startActivity(intent);
+            }
+        });
 
         LinearLayoutManager layoutManager =new LinearLayoutManager(getActivity());
         rv1.setLayoutManager(layoutManager);

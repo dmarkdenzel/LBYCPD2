@@ -22,6 +22,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="30dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="20dp">
 
                 <ImageView
