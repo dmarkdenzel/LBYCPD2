@@ -57,6 +57,9 @@ public class openProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_profile);
 
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         user=FirebaseAuth.getInstance().getCurrentUser();
         dbref= FirebaseDatabase.getInstance().getReference("users");
         userUID=user.getUid();
@@ -120,7 +123,7 @@ public class openProfile extends AppCompatActivity {
                         }
                         else {
                             Intent intent = new Intent(openProfile.this, sellerhome.class);
-                            intent.putExtra("page", "1");
+                            intent.putExtra("page","1");
                             startActivity(intent);
                         }
                     }

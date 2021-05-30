@@ -17,6 +17,7 @@
         <activity android:name=".InsideStore" />
         <activity android:name=".PaymentOptions" />
         <activity android:name=".checkout" />
+        <activity android:name=".openProfile" />
         <activity android:name=".CreateItem" />
         <activity android:name=".CategoryItemList" />
         <activity android:name=".categoryCreator" />
